@@ -1,0 +1,76 @@
+{
+  "schema": "subpower.decision-points/v1",
+  "decision_points": [
+    {
+      "decision_point_id": "board_validation_failed",
+      "trigger": "board_validation_result.status == failed",
+      "required_assessor": "repo-reviewer",
+      "required_artifacts": ["board_validation_result", "evidence_manifest", "board_failure_review"],
+      "decision_owner": "workflow-orchestrator",
+      "allowed_routes": ["coder_rework", "planner_rework", "collect_more_evidence", "rerun_board_validation", "escalate_to_user", "close_as_environment_issue"],
+      "route_gate": "board_failure_review_exists_and_route_allowed",
+      "terminal_options": ["close_as_environment_issue", "escalate_to_user"]
+    },
+    {
+      "decision_point_id": "code_review_failed",
+      "trigger": "review_decision.decision in [changes_requested, blocked]",
+      "required_assessor": "repo-reviewer",
+      "required_artifacts": ["review_decision", "code_change_manifest"],
+      "decision_owner": "workflow-orchestrator",
+      "allowed_routes": ["coder_rework", "planner_rework", "collect_more_evidence", "escalate_to_user"],
+      "route_gate": "reviewer_findings_required",
+      "terminal_options": ["escalate_to_user"]
+    },
+    {
+      "decision_point_id": "evidence_insufficient",
+      "trigger": "evidence_manifest.status == insufficient",
+      "required_assessor": "repo-reviewer",
+      "required_artifacts": ["evidence_manifest"],
+      "decision_owner": "workflow-orchestrator",
+      "allowed_routes": ["collect_more_evidence", "rerun_board_validation", "planner_rework", "escalate_to_user"],
+      "route_gate": "evidence_gap_declared",
+      "terminal_options": ["escalate_to_user"]
+    },
+    {
+      "decision_point_id": "scope_mismatch",
+      "trigger": "scope violation recorded",
+      "required_assessor": "knowledge-planner",
+      "required_artifacts": ["implementation_plan", "code_change_manifest"],
+      "decision_owner": "workflow-orchestrator",
+      "allowed_routes": ["planner_rework", "escalate_to_user", "stop"],
+      "route_gate": "scope_violation_recorded",
+      "terminal_options": ["stop", "escalate_to_user"]
+    },
+    {
+      "decision_point_id": "environment_unstable",
+      "trigger": "board or test environment prevents reliable decision",
+      "required_assessor": "board-runner",
+      "required_artifacts": ["board_validation_result", "evidence_manifest"],
+      "decision_owner": "workflow-orchestrator",
+      "allowed_routes": ["rerun_board_validation", "collect_more_evidence", "close_as_environment_issue", "escalate_to_user"],
+      "route_gate": "environment_evidence_required",
+      "terminal_options": ["close_as_environment_issue", "escalate_to_user"]
+    },
+    {
+      "decision_point_id": "requirement_ambiguous",
+      "trigger": "expected behavior cannot be mapped to acceptance criteria",
+      "required_assessor": "knowledge-planner",
+      "required_artifacts": ["task_profile"],
+      "decision_owner": "workflow-orchestrator",
+      "allowed_routes": ["planner_rework", "escalate_to_user", "functional_review"],
+      "route_gate": "ambiguity_recorded",
+      "terminal_options": ["escalate_to_user"]
+    },
+    {
+      "decision_point_id": "closure_blocked",
+      "trigger": "closure_matrix is not satisfied",
+      "required_assessor": "repo-reviewer",
+      "required_artifacts": ["closure_matrix", "review_decision", "evidence_manifest"],
+      "decision_owner": "workflow-orchestrator",
+      "allowed_routes": ["collect_more_evidence", "planner_rework", "coder_rework", "writeback_declined", "escalate_to_user"],
+      "route_gate": "closure_blockers_required",
+      "terminal_options": ["writeback_declined", "escalate_to_user"]
+    }
+  ]
+}
+

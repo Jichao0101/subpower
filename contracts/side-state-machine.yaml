@@ -1,0 +1,18 @@
+{
+  "schema": "subpower.side-state-machine/v1",
+  "sides": {
+    "knowledge": ["context_pending", "context_ready", "writeback_pending", "writeback_done", "synced", "blocked"],
+    "repo": ["untouched", "planned", "changed", "locally_verified", "reviewed", "rework_required", "merged_ready", "blocked"],
+    "board": ["not_required", "target_pending", "target_bound", "executed", "evidence_collected", "failed", "passed", "blocked"]
+  },
+  "close_allowed": [
+    {"knowledge": ["writeback_done", "synced"], "repo": ["reviewed", "merged_ready"], "board": ["not_required", "passed"]},
+    {"knowledge": ["context_ready", "writeback_done", "synced"], "repo": ["untouched", "reviewed"], "board": ["evidence_collected", "blocked"], "requires_terminal_route": true}
+  ],
+  "block_states": [
+    {"board": "target_pending", "reason": "board_required_without_target"},
+    {"board": "failed", "reason": "board_failed_requires_assessment"},
+    {"repo": "rework_required", "reason": "review_requires_rework"}
+  ]
+}
+

@@ -1,0 +1,32 @@
+{
+  "name": "subpower",
+  "version": "0.1.0",
+  "description": "Subagent-first three-side orchestration runtime for knowledge, repository, and board validation workflows.",
+  "author": {
+    "name": "Jichao"
+  },
+  "license": "MIT",
+  "keywords": [
+    "subagent",
+    "orchestration",
+    "workflow",
+    "board-validation",
+    "review",
+    "runtime-gates",
+    "three-side"
+  ],
+  "skills": "./skills/",
+  "agents": "./agents/",
+  "interface": {
+    "displayName": "subpower",
+    "shortDescription": "Subagent-first orchestration runtime for three-side workflows.",
+    "developerName": "Jichao",
+    "category": "Productivity",
+    "capabilities": [
+      "Read",
+      "Write"
+    ],
+    "defaultPrompt": "Use subpower when a task needs subagent handoff, board evidence, independent review, decision-point routing, or three-side closure."
+  }
+}
+

@@ -1,0 +1,26 @@
+{
+  "schema": "subpower.gate-matrix/v1",
+  "phases": ["intake", "planning", "implementation", "review", "board_validation", "routing", "closure", "writeback"],
+  "gates": [
+    "role_gate",
+    "phase_gate",
+    "artifact_gate",
+    "schema_gate",
+    "independence_gate",
+    "board_target_gate",
+    "evidence_gate",
+    "route_gate",
+    "closure_gate",
+    "writeback_gate"
+  ],
+  "phase_actions": {
+    "planning": ["context_read", "implementation_plan_write", "board_target_write", "workflow_plan_write"],
+    "implementation": ["repo_write", "verification_exec", "code_change_manifest_write", "evidence_write"],
+    "review": ["artifact_read", "review_decision_write", "board_failure_review_write", "evidence_read"],
+    "board_validation": ["board_execute", "artifact_collect", "board_validation_result_write", "evidence_write"],
+    "routing": ["artifact_read", "route_decision_write"],
+    "closure": ["artifact_read", "closure_request"],
+    "writeback": ["knowledge_writeback"]
+  }
+}
+

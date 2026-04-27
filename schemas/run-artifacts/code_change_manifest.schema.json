@@ -1,0 +1,2 @@
+{"$schema":"https://json-schema.org/draft/2020-12/schema","title":"code_change_manifest","type":"object","required":["session_id","producer_agent","files_changed","verification_results"],"properties":{"session_id":{"type":"string"},"producer_agent":{"type":"string"},"files_changed":{"type":"array","items":{"type":"string"}},"verification_results":{"type":"array"}}}
+

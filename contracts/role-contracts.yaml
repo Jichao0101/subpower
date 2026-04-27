@@ -1,0 +1,46 @@
+{
+  "schema": "subpower.role-contracts/v1",
+  "roles": [
+    {
+      "role_id": "workflow-orchestrator",
+      "allowed_actions": ["artifact_read", "workflow_plan_write", "route_decision_write", "closure_request"],
+      "denied_actions": ["repo_write", "review_decision_write", "board_execute", "knowledge_writeback"],
+      "required_inputs": ["task_profile"],
+      "required_outputs": ["workflow_plan", "main_route_decision", "closure_matrix"],
+      "stop_conditions": ["missing_task_profile", "missing_required_assessor_artifact", "illegal_route"]
+    },
+    {
+      "role_id": "knowledge-planner",
+      "allowed_actions": ["context_read", "implementation_plan_write", "board_target_write", "workflow_recommendation_write"],
+      "denied_actions": ["repo_write", "review_decision_write", "board_execute", "closure_request"],
+      "required_inputs": ["task_profile"],
+      "required_outputs": ["implementation_plan"],
+      "stop_conditions": ["missing_scope", "board_required_without_target", "requirement_ambiguous"]
+    },
+    {
+      "role_id": "repo-implementer",
+      "allowed_actions": ["repo_write", "verification_exec", "code_change_manifest_write", "evidence_write"],
+      "denied_actions": ["review_decision_write", "board_execute", "route_decision_write", "knowledge_writeback"],
+      "required_inputs": ["implementation_plan", "handoff_packet"],
+      "required_outputs": ["code_change_manifest", "evidence_manifest"],
+      "stop_conditions": ["missing_implementation_plan", "scope_mismatch", "verification_unavailable"]
+    },
+    {
+      "role_id": "repo-reviewer",
+      "allowed_actions": ["artifact_read", "review_decision_write", "board_failure_review_write", "evidence_read"],
+      "denied_actions": ["repo_write", "board_execute", "route_decision_write", "knowledge_writeback"],
+      "required_inputs": ["code_change_manifest", "evidence_manifest"],
+      "required_outputs": ["review_decision"],
+      "stop_conditions": ["missing_review_package", "missing_evidence", "independence_violation"]
+    },
+    {
+      "role_id": "board-runner",
+      "allowed_actions": ["board_execute", "artifact_collect", "board_validation_result_write", "evidence_write"],
+      "denied_actions": ["repo_write", "review_decision_write", "route_decision_write", "knowledge_writeback", "closure_request"],
+      "required_inputs": ["board_target"],
+      "required_outputs": ["board_validation_result", "evidence_manifest"],
+      "stop_conditions": ["missing_board_target", "invalid_collect_paths", "board_environment_unstable"]
+    }
+  ]
+}
+

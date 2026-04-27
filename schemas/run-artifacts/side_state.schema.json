@@ -1,0 +1,2 @@
+{"$schema":"https://json-schema.org/draft/2020-12/schema","title":"side_state","type":"object","required":["session_id","sides"],"properties":{"session_id":{"type":"string"},"sides":{"type":"object","required":["knowledge","repo","board"]}}}
+

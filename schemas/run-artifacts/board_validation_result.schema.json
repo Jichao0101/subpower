@@ -1,0 +1,2 @@
+{"$schema":"https://json-schema.org/draft/2020-12/schema","title":"board_validation_result","type":"object","required":["session_id","producer_agent","status","evidence_refs"],"properties":{"session_id":{"type":"string"},"producer_agent":{"type":"string"},"status":{"enum":["passed","failed","blocked"]},"evidence_refs":{"type":"array","items":{"type":"string"}}}}
+

@@ -1,0 +1,2 @@
+{"$schema":"https://json-schema.org/draft/2020-12/schema","title":"closure_matrix","type":"object","required":["session_id","status","required_artifacts","blockers"],"properties":{"session_id":{"type":"string"},"status":{"enum":["passed","blocked","closed_with_risks","declined","environment_issue"]},"required_artifacts":{"type":"array","items":{"type":"string"}},"blockers":{"type":"array"}}}
+

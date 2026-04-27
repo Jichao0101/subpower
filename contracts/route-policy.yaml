@@ -1,0 +1,13 @@
+{
+  "schema": "subpower.route-policy/v1",
+  "routes": ["coder_rework", "planner_rework", "collect_more_evidence", "rerun_board_validation", "escalate_to_user", "close_as_environment_issue", "stop", "functional_review", "writeback_declined"],
+  "route_requires": {
+    "coder_rework": ["main_route_decision"],
+    "planner_rework": ["main_route_decision"],
+    "collect_more_evidence": ["main_route_decision"],
+    "rerun_board_validation": ["main_route_decision", "board_target"],
+    "close_as_environment_issue": ["main_route_decision", "evidence_manifest", "closure_matrix"],
+    "writeback_declined": ["closure_matrix"]
+  }
+}
+

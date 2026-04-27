@@ -1,0 +1,2 @@
+{"$schema":"https://json-schema.org/draft/2020-12/schema","title":"workflow_plan","type":"object","required":["session_id","workflow_id","planned_steps"],"properties":{"session_id":{"type":"string"},"workflow_id":{"type":"string"},"planned_steps":{"type":"array","items":{"type":"string"}}}}
+

@@ -1,0 +1,20 @@
+{
+  "schema": "subpower.artifact-requirements/v1",
+  "artifacts": {
+    "task_profile": {"required_fields": ["session_id", "primary_type", "task_goal"]},
+    "workflow_plan": {"required_fields": ["session_id", "workflow_id", "planned_steps"]},
+    "agent_invocation_manifest": {"required_fields": ["session_id", "invocations"]},
+    "side_state": {"required_fields": ["session_id", "sides"]},
+    "handoff_packet": {"required_fields": ["session_id", "from_agent", "to_agent", "artifacts"]},
+    "implementation_plan": {"required_fields": ["session_id", "producer_agent", "repo_scope", "verification_plan"]},
+    "code_change_manifest": {"required_fields": ["session_id", "producer_agent", "files_changed", "verification_results"]},
+    "review_decision": {"required_fields": ["session_id", "producer_agent", "decision", "findings"]},
+    "board_target": {"required_fields": ["session_id", "board_target_id", "run_commands", "collect_paths"]},
+    "board_validation_result": {"required_fields": ["session_id", "producer_agent", "status", "evidence_refs"]},
+    "board_failure_review": {"required_fields": ["session_id", "producer_agent", "failure_class", "recommended_next", "confidence", "blocking_evidence", "rationale"]},
+    "main_route_decision": {"required_fields": ["session_id", "decision_point_id", "selected_route", "based_on_artifacts"]},
+    "evidence_manifest": {"required_fields": ["session_id", "producer_agent", "status", "evidence"]},
+    "closure_matrix": {"required_fields": ["session_id", "status", "required_artifacts", "blockers"]}
+  }
+}
+

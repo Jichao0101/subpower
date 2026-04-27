@@ -1,0 +1,2 @@
+{"$schema":"https://json-schema.org/draft/2020-12/schema","title":"main_route_decision","type":"object","required":["session_id","decision_point_id","selected_route","based_on_artifacts"],"properties":{"session_id":{"type":"string"},"decision_point_id":{"type":"string"},"selected_route":{"type":"string"},"based_on_artifacts":{"type":"array","items":{"type":"string"}}}}
+
