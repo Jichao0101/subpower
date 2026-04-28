@@ -5,8 +5,8 @@
   "required": ["session_id", "producer_agent", "invocations"],
   "additionalProperties": false,
   "properties": {
-    "session_id": {"type": "string"},
-    "producer_agent": {"type": "string"},
+    "session_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"},
+    "producer_agent": {"type": "string", "minLength": 1},
     "invocations": {
       "type": "array",
       "items": {
@@ -14,9 +14,9 @@
         "required": ["invocation_id", "agent_id", "role_id"],
         "additionalProperties": false,
         "properties": {
-          "invocation_id": {"type": "string"},
-          "agent_id": {"type": "string"},
-          "role_id": {"type": "string"}
+          "invocation_id": {"type": "string", "minLength": 1},
+          "agent_id": {"type": "string", "minLength": 1},
+          "role_id": {"type": "string", "minLength": 1}
         }
       }
     }

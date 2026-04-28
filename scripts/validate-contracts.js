@@ -2,7 +2,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { validateSchema } = require('./schema-validator');
+const { formatErrors, validateSchema } = require('./schema-validator');
 
 const ROOT = path.resolve(__dirname, '..');
 
@@ -47,7 +47,7 @@ function validateContracts() {
         if (!value.title || !value.type) {
           errors.push(`${file}: missing title or type`);
         }
-        errors.push(...validateSchema(value).map((error) => `${file}: ${error}`));
+        errors.push(...formatErrors(validateSchema(value)).map((error) => `${file}: ${error}`));
       } catch (error) {
         errors.push(`${file}: ${error.message}`);
       }

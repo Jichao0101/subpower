@@ -3,7 +3,7 @@
 const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
-const { validate, validateSchema } = require('./schema-validator');
+const { validate, validateSchema, formatErrors } = require('./schema-validator');
 
 const ROOT = path.resolve(__dirname, '..');
 
@@ -30,9 +30,10 @@ const schema = {
 
 assert.deepStrictEqual(validateSchema(schema), []);
 assert.deepStrictEqual(validate({ kind: 'demo', items: [{ name: 'ok' }] }, schema), []);
-assert(validate({ kind: 'bad', items: [] }, schema).some((error) => error.includes('enum')));
-assert(validate({ kind: 'demo', items: [{ name: 'ok', extra: true }] }, schema).some((error) => error.includes('additional')));
-assert(validate({ kind: 'demo' }, schema).some((error) => error.includes('required')));
+assert(validate({ kind: 'bad', items: [] }, schema).some((error) => error.code === 'enum_mismatch'));
+assert(validate({ kind: 'demo', items: [{ name: 'ok', extra: true }] }, schema).some((error) => error.code === 'additional_property'));
+assert(validate({ kind: 'demo' }, schema).some((error) => error.code === 'required_missing'));
+assert(formatErrors(validate({ kind: 'bad', items: [] }, schema))[0].includes('enum_mismatch'));
 
 for (const dir of ['schemas/run-artifacts', 'schemas/contracts']) {
   for (const name of fs.readdirSync(path.join(ROOT, dir))) {

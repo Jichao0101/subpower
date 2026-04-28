@@ -5,9 +5,9 @@
   "required": ["session_id", "producer_agent", "repo_scope", "verification_plan"],
   "additionalProperties": false,
   "properties": {
-    "session_id": {"type": "string"},
-    "producer_agent": {"type": "string"},
-    "repo_scope": {"type": "array", "items": {"type": "string"}},
-    "verification_plan": {"type": "array", "items": {"type": "string"}}
+    "session_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"},
+    "producer_agent": {"type": "string", "minLength": 1},
+    "repo_scope": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+    "verification_plan": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}
   }
 }

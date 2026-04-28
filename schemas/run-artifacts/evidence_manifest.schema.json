@@ -5,18 +5,19 @@
   "required": ["session_id", "producer_agent", "status", "evidence"],
   "additionalProperties": false,
   "properties": {
-    "session_id": {"type": "string"},
-    "producer_agent": {"type": "string"},
+    "session_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"},
+    "producer_agent": {"type": "string", "minLength": 1},
     "status": {"enum": ["sufficient", "insufficient", "blocked"]},
     "evidence": {
       "type": "array",
+      "minItems": 1,
       "items": {
         "type": "object",
         "required": ["id", "path"],
         "additionalProperties": false,
         "properties": {
-          "id": {"type": "string"},
-          "path": {"type": "string"}
+          "id": {"type": "string", "minLength": 1},
+          "path": {"type": "string", "minLength": 1}
         }
       }
     }

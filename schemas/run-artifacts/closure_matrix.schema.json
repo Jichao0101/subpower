@@ -5,8 +5,8 @@
   "required": ["session_id", "producer_agent", "close_allowed", "review_status", "evidence_status", "repo_state", "board_state", "knowledge_state", "blockers"],
   "additionalProperties": false,
   "properties": {
-    "session_id": {"type": "string"},
-    "producer_agent": {"type": "string"},
+    "session_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"},
+    "producer_agent": {"type": "string", "minLength": 1},
     "close_allowed": {"type": "boolean"},
     "review_status": {"enum": ["approved", "changes_requested", "blocked", "not_required"]},
     "evidence_status": {"enum": ["sufficient", "insufficient", "blocked"]},
@@ -14,6 +14,6 @@
     "board_state": {"enum": ["not_required", "target_pending", "target_bound", "executed", "evidence_collected", "failed", "passed", "blocked"]},
     "knowledge_state": {"enum": ["context_pending", "context_ready", "writeback_pending", "writeback_done", "synced", "blocked"]},
     "required_artifacts": {"type": "array", "items": {"type": "string"}},
-    "blockers": {"type": "array", "items": {"type": "string"}}
+    "blockers": {"type": "array", "items": {"type": "string", "minLength": 1}}
   }
 }

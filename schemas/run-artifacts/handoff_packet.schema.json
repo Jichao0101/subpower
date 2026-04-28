@@ -5,9 +5,9 @@
   "required": ["session_id", "from_agent", "to_agent", "artifacts"],
   "additionalProperties": false,
   "properties": {
-    "session_id": {"type": "string"},
-    "from_agent": {"type": "string"},
-    "to_agent": {"type": "string"},
-    "artifacts": {"type": "array", "items": {"type": "string"}}
+    "session_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"},
+    "from_agent": {"type": "string", "minLength": 1},
+    "to_agent": {"type": "string", "minLength": 1},
+    "artifacts": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}
   }
 }

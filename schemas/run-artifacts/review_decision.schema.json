@@ -5,8 +5,8 @@
   "required": ["session_id", "producer_agent", "decision", "findings"],
   "additionalProperties": false,
   "properties": {
-    "session_id": {"type": "string"},
-    "producer_agent": {"type": "string"},
+    "session_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"},
+    "producer_agent": {"type": "string", "minLength": 1},
     "decision": {"enum": ["approved", "changes_requested", "blocked"]},
     "findings": {
       "type": "array",

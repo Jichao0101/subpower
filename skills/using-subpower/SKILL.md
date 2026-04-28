@@ -20,3 +20,5 @@ Use subpower as the orchestration runtime for subagent handoff, side-state track
 - Do not bypass reviewer assessment after failed board validation.
 - Do not close without evidence and closure artifacts.
 - Do not import runtime state from another orchestration system.
+- External orchestration projects may be used as design references only.
+- No source-level, runtime-level, schema-level, or artifact-level dependency is allowed.
