@@ -1,0 +1,11 @@
+{
+  "session_id": "fixture-board-failure-rework",
+  "producer_agent": "impl-1",
+  "files_changed": ["src/fusion/timestamp_alignment.cpp", "tests/fusion_timestamp_alignment.test.js"],
+  "verification_results": [
+    {
+      "command": "node tests/fusion_timestamp_alignment.test.js",
+      "status": "passed"
+    }
+  ]
+}

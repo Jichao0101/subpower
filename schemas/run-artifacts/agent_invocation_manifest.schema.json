@@ -1,2 +1,24 @@
-{"$schema":"https://json-schema.org/draft/2020-12/schema","title":"agent_invocation_manifest","type":"object","required":["session_id","invocations"],"properties":{"session_id":{"type":"string"},"invocations":{"type":"array","items":{"type":"object","required":["invocation_id","agent_id","role_id"],"properties":{"invocation_id":{"type":"string"},"agent_id":{"type":"string"},"role_id":{"type":"string"}}}}}}
-
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "agent_invocation_manifest",
+  "type": "object",
+  "required": ["session_id", "producer_agent", "invocations"],
+  "additionalProperties": false,
+  "properties": {
+    "session_id": {"type": "string"},
+    "producer_agent": {"type": "string"},
+    "invocations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["invocation_id", "agent_id", "role_id"],
+        "additionalProperties": false,
+        "properties": {
+          "invocation_id": {"type": "string"},
+          "agent_id": {"type": "string"},
+          "role_id": {"type": "string"}
+        }
+      }
+    }
+  }
+}

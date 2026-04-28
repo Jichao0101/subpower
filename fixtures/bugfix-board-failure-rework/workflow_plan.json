@@ -1,0 +1,6 @@
+{
+  "session_id": "fixture-board-failure-rework",
+  "producer_agent": "workflow-1",
+  "workflow_id": "bug_fix",
+  "planned_steps": ["plan_timestamp_alignment_fix", "implement_local_patch", "review_patch", "run_board_validation", "assess_failed_board_result"]
+}

@@ -1,0 +1,7 @@
+{
+  "session_id": "fixture-board-failure-rework",
+  "producer_agent": "workflow-1",
+  "primary_type": "bug_fix",
+  "task_goal": "Fix board-side fusion target jump after timestamp alignment changes.",
+  "task_modifiers": ["board_required", "safety_relevant"]
+}

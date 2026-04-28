@@ -1,2 +1,14 @@
-{"$schema":"https://json-schema.org/draft/2020-12/schema","title":"board_target","type":"object","required":["session_id","board_target_id","run_commands","collect_paths"],"properties":{"session_id":{"type":"string"},"board_target_id":{"type":"string"},"run_commands":{"type":"array","items":{"type":"string"}},"collect_paths":{"type":"array","items":{"type":"string"}}}}
-
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "board_target",
+  "type": "object",
+  "required": ["session_id", "producer_agent", "board_target_id", "run_commands", "collect_paths"],
+  "additionalProperties": false,
+  "properties": {
+    "session_id": {"type": "string"},
+    "producer_agent": {"type": "string"},
+    "board_target_id": {"type": "string"},
+    "run_commands": {"type": "array", "items": {"type": "string"}},
+    "collect_paths": {"type": "array", "items": {"type": "string"}}
+  }
+}

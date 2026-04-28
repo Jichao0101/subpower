@@ -27,7 +27,13 @@ const {
   const runDir = tempRunDir('subpower-close-evidence');
   writeArtifact(runDir, 'closure_matrix', {
     session_id: 's1',
-    status: 'passed',
+    producer_agent: 'workflow-1',
+    close_allowed: true,
+    review_status: 'approved',
+    evidence_status: 'sufficient',
+    repo_state: 'reviewed',
+    board_state: 'not_required',
+    knowledge_state: 'context_ready',
     required_artifacts: [],
     blockers: []
   });
@@ -36,4 +42,3 @@ const {
 }
 
 console.log('runtime gate negative tests passed');
-

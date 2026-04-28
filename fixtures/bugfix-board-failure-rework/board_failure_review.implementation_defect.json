@@ -1,0 +1,9 @@
+{
+  "session_id": "fixture-board-failure-rework",
+  "producer_agent": "review-1",
+  "failure_class": "implementation_defect",
+  "recommended_next": "coder_rework",
+  "confidence": 0.82,
+  "blocking_evidence": ["target-trace"],
+  "rationale": ["The high yaw-rate trace still shows a timestamp-aligned target jump after the local patch."]
+}

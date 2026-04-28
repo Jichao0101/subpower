@@ -14,13 +14,12 @@
     "writeback_gate"
   ],
   "phase_actions": {
-    "planning": ["context_read", "implementation_plan_write", "board_target_write", "workflow_plan_write"],
+    "planning": ["context_read", "implementation_plan_write", "board_target_write", "workflow_plan_write", "verification_matrix_write", "verification_gap_recommendation_write"],
     "implementation": ["repo_write", "verification_exec", "code_change_manifest_write", "evidence_write"],
-    "review": ["artifact_read", "review_decision_write", "board_failure_review_write", "evidence_read"],
+    "review": ["artifact_read", "review_decision_write", "board_failure_review_write", "evidence_read", "failure_classification_write", "evidence_gap_recommendation_write"],
     "board_validation": ["board_execute", "artifact_collect", "board_validation_result_write", "evidence_write"],
     "routing": ["artifact_read", "route_decision_write"],
     "closure": ["artifact_read", "closure_request"],
-    "writeback": ["knowledge_writeback"]
+    "writeback": ["artifact_read", "knowledge_writeback", "writeback_receipt_write", "writeback_declined_write"]
   }
 }
-

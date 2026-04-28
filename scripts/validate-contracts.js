@@ -2,6 +2,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { validateSchema } = require('./schema-validator');
 
 const ROOT = path.resolve(__dirname, '..');
 
@@ -25,19 +26,47 @@ function validateContracts() {
       if (!value.schema) {
         errors.push(`${file}: missing schema`);
       }
+      if (typeof value.schema !== 'string' || !value.schema.startsWith('subpower.')) {
+        errors.push(`${file}: invalid schema id`);
+      }
     } catch (error) {
       errors.push(`${file}: ${error.message}`);
     }
   }
-  const schemaDir = path.join(ROOT, 'schemas', 'run-artifacts');
-  for (const file of listFiles(schemaDir, '.json')) {
-    try {
-      const value = readJson(file);
-      if (!value.title || !Array.isArray(value.required)) {
-        errors.push(`${file}: missing title or required fields`);
+  for (const schemaDir of [
+    path.join(ROOT, 'schemas', 'run-artifacts'),
+    path.join(ROOT, 'schemas', 'contracts'),
+  ]) {
+    if (!fs.existsSync(schemaDir)) {
+      errors.push(`${schemaDir}: missing schema directory`);
+      continue;
+    }
+    for (const file of listFiles(schemaDir, '.json')) {
+      try {
+        const value = readJson(file);
+        if (!value.title || !value.type) {
+          errors.push(`${file}: missing title or type`);
+        }
+        errors.push(...validateSchema(value).map((error) => `${file}: ${error}`));
+      } catch (error) {
+        errors.push(`${file}: ${error.message}`);
       }
+    }
+  }
+
+  const artifactRequirements = readJson(path.join(ROOT, 'contracts', 'artifact-requirements.yaml')).artifacts;
+  for (const artifactName of Object.keys(artifactRequirements)) {
+    const schemaFile = path.join(ROOT, 'schemas', 'run-artifacts', `${artifactName}.schema.json`);
+    if (!fs.existsSync(schemaFile)) {
+      errors.push(`${schemaFile}: missing artifact schema`);
+    }
+  }
+
+  for (const file of files) {
+    try {
+      readJson(file);
     } catch (error) {
-      errors.push(`${file}: ${error.message}`);
+      errors.push(`${file}: not parseable as YAML/JSON subset: ${error.message}`);
     }
   }
   return errors;
@@ -53,4 +82,3 @@ if (require.main === module) {
 }
 
 module.exports = { validateContracts };
-

@@ -1,2 +1,24 @@
-{"$schema":"https://json-schema.org/draft/2020-12/schema","title":"review_decision","type":"object","required":["session_id","producer_agent","decision","findings"],"properties":{"session_id":{"type":"string"},"producer_agent":{"type":"string"},"decision":{"enum":["approved","changes_requested","blocked"]},"findings":{"type":"array"}}}
-
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "review_decision",
+  "type": "object",
+  "required": ["session_id", "producer_agent", "decision", "findings"],
+  "additionalProperties": false,
+  "properties": {
+    "session_id": {"type": "string"},
+    "producer_agent": {"type": "string"},
+    "decision": {"enum": ["approved", "changes_requested", "blocked"]},
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["severity", "summary"],
+        "additionalProperties": false,
+        "properties": {
+          "severity": {"enum": ["info", "low", "medium", "high", "critical"]},
+          "summary": {"type": "string"}
+        }
+      }
+    }
+  }
+}

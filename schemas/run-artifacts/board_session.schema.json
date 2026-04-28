@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "board_session",
+  "type": "object",
+  "required": ["session_id", "producer_agent", "board", "scenario", "status"],
+  "additionalProperties": false,
+  "properties": {
+    "session_id": {"type": "string"},
+    "producer_agent": {"type": "string"},
+    "board": {"type": "string"},
+    "scenario": {"type": "string"},
+    "status": {"enum": ["started", "completed", "failed", "blocked"]}
+  }
+}

@@ -1,2 +1,13 @@
-{"$schema":"https://json-schema.org/draft/2020-12/schema","title":"implementation_plan","type":"object","required":["session_id","producer_agent","repo_scope","verification_plan"],"properties":{"session_id":{"type":"string"},"producer_agent":{"type":"string"},"repo_scope":{"type":"array","items":{"type":"string"}},"verification_plan":{"type":"array","items":{"type":"string"}}}}
-
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "implementation_plan",
+  "type": "object",
+  "required": ["session_id", "producer_agent", "repo_scope", "verification_plan"],
+  "additionalProperties": false,
+  "properties": {
+    "session_id": {"type": "string"},
+    "producer_agent": {"type": "string"},
+    "repo_scope": {"type": "array", "items": {"type": "string"}},
+    "verification_plan": {"type": "array", "items": {"type": "string"}}
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "session_id": "fixture-board-failure-rework",
+  "producer_agent": "workflow-1",
+  "decision_point_id": "board_validation_failed",
+  "assessor_artifact": "board_failure_review",
+  "route": "coder_rework",
+  "reason": "The reviewer classified the failed board run as an implementation defect.",
+  "based_on_artifacts": ["board_validation_result", "evidence_manifest", "board_failure_review"]
+}

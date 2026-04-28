@@ -9,5 +9,4 @@ Hard stops:
 - Do not route from a failed board validation without `board_failure_review.json`.
 - Do not close without `evidence_manifest.json` and `closure_matrix.json`.
 - Do not write back knowledge without reviewed closure evidence.
-- Do not read `.cutepower/run/<session_id>/` as authoritative subpower state; use only the optional adapter.
-
+- Do not import runtime state from another orchestration system.

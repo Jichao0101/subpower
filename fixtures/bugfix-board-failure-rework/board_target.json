@@ -1,0 +1,7 @@
+{
+  "session_id": "fixture-board-failure-rework",
+  "producer_agent": "planner-1",
+  "board_target_id": "fusion-high-yaw-rate-target-stability",
+  "run_commands": ["./run_board_validation --scenario high_yaw_rate_target_jump"],
+  "collect_paths": ["logs/board/high_yaw_rate.log", "artifacts/fusion_target_trace.json"]
+}

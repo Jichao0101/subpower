@@ -19,5 +19,4 @@ Use subpower as the orchestration runtime for subagent handoff, side-state track
 - Do not treat a workflow pattern as a fixed script.
 - Do not bypass reviewer assessment after failed board validation.
 - Do not close without evidence and closure artifacts.
-- Do not use `.cutepower/run/<session_id>/` as authoritative state.
-
+- Do not import runtime state from another orchestration system.

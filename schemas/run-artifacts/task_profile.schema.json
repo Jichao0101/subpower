@@ -1,2 +1,14 @@
-{"$schema":"https://json-schema.org/draft/2020-12/schema","title":"task_profile","type":"object","required":["session_id","primary_type","task_goal"],"properties":{"session_id":{"type":"string"},"primary_type":{"type":"string"},"task_goal":{"type":"string"},"task_modifiers":{"type":"array","items":{"type":"string"}}}}
-
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "task_profile",
+  "type": "object",
+  "required": ["session_id", "producer_agent", "primary_type", "task_goal"],
+  "additionalProperties": false,
+  "properties": {
+    "session_id": {"type": "string"},
+    "producer_agent": {"type": "string"},
+    "primary_type": {"enum": ["incident_investigation", "bug_fix", "board_validation", "functional_review", "knowledge_writeback"]},
+    "task_goal": {"type": "string"},
+    "task_modifiers": {"type": "array", "items": {"type": "string"}}
+  }
+}

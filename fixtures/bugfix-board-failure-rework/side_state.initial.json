@@ -1,0 +1,9 @@
+{
+  "session_id": "fixture-board-failure-rework",
+  "producer_agent": "workflow-1",
+  "sides": {
+    "knowledge": "context_ready",
+    "repo": "planned",
+    "board": "target_bound"
+  }
+}

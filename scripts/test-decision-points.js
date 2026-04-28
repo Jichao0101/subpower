@@ -24,8 +24,11 @@ const {
   });
   writeArtifact(runDir, 'main_route_decision', {
     session_id: 's1',
+    producer_agent: 'workflow-1',
     decision_point_id: 'board_validation_failed',
-    selected_route: 'coder_rework',
+    assessor_artifact: 'board_failure_review',
+    route: 'coder_rework',
+    reason: 'reviewer classified the failed board run as an implementation defect',
     based_on_artifacts: ['board_validation_result', 'evidence_manifest']
   });
   expectBlocked(gateRoute(runDir), 'missing_required_artifacts');
@@ -56,8 +59,11 @@ const {
   });
   writeArtifact(runDir, 'main_route_decision', {
     session_id: 's1',
+    producer_agent: 'workflow-1',
     decision_point_id: 'board_validation_failed',
-    selected_route: 'merge_anyway',
+    assessor_artifact: 'board_failure_review',
+    route: 'proceed_to_closure',
+    reason: 'invalid attempt to close after failed board validation',
     based_on_artifacts: ['board_validation_result', 'evidence_manifest', 'board_failure_review']
   });
   expectBlocked(gateRoute(runDir), 'route_not_allowed_for_decision_point');
@@ -88,12 +94,14 @@ const {
   });
   writeArtifact(runDir, 'main_route_decision', {
     session_id: 's1',
+    producer_agent: 'workflow-1',
     decision_point_id: 'board_validation_failed',
-    selected_route: 'coder_rework',
+    assessor_artifact: 'board_failure_review',
+    route: 'coder_rework',
+    reason: 'reviewer classified the failed board run as an implementation defect',
     based_on_artifacts: ['board_validation_result', 'evidence_manifest', 'board_failure_review']
   });
   expectReady(gateRoute(runDir));
 }
 
 console.log('decision point tests passed');
-

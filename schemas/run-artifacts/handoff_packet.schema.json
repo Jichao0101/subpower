@@ -1,2 +1,13 @@
-{"$schema":"https://json-schema.org/draft/2020-12/schema","title":"handoff_packet","type":"object","required":["session_id","from_agent","to_agent","artifacts"],"properties":{"session_id":{"type":"string"},"from_agent":{"type":"string"},"to_agent":{"type":"string"},"artifacts":{"type":"array","items":{"type":"string"}}}}
-
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "handoff_packet",
+  "type": "object",
+  "required": ["session_id", "from_agent", "to_agent", "artifacts"],
+  "additionalProperties": false,
+  "properties": {
+    "session_id": {"type": "string"},
+    "from_agent": {"type": "string"},
+    "to_agent": {"type": "string"},
+    "artifacts": {"type": "array", "items": {"type": "string"}}
+  }
+}

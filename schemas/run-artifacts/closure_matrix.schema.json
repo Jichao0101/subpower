@@ -1,2 +1,19 @@
-{"$schema":"https://json-schema.org/draft/2020-12/schema","title":"closure_matrix","type":"object","required":["session_id","status","required_artifacts","blockers"],"properties":{"session_id":{"type":"string"},"status":{"enum":["passed","blocked","closed_with_risks","declined","environment_issue"]},"required_artifacts":{"type":"array","items":{"type":"string"}},"blockers":{"type":"array"}}}
-
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "closure_matrix",
+  "type": "object",
+  "required": ["session_id", "producer_agent", "close_allowed", "review_status", "evidence_status", "repo_state", "board_state", "knowledge_state", "blockers"],
+  "additionalProperties": false,
+  "properties": {
+    "session_id": {"type": "string"},
+    "producer_agent": {"type": "string"},
+    "close_allowed": {"type": "boolean"},
+    "review_status": {"enum": ["approved", "changes_requested", "blocked", "not_required"]},
+    "evidence_status": {"enum": ["sufficient", "insufficient", "blocked"]},
+    "repo_state": {"enum": ["untouched", "planned", "changed", "locally_verified", "reviewed", "rework_required", "merged_ready", "blocked"]},
+    "board_state": {"enum": ["not_required", "target_pending", "target_bound", "executed", "evidence_collected", "failed", "passed", "blocked"]},
+    "knowledge_state": {"enum": ["context_pending", "context_ready", "writeback_pending", "writeback_done", "synced", "blocked"]},
+    "required_artifacts": {"type": "array", "items": {"type": "string"}},
+    "blockers": {"type": "array", "items": {"type": "string"}}
+  }
+}

@@ -15,6 +15,7 @@ const { listArtifacts, readArtifact } = require('./run-artifacts');
   const runDir = tempRunDir('subpower-artifacts');
   writeArtifact(runDir, 'task_profile', {
     session_id: 's1',
+    producer_agent: 'workflow-1',
     primary_type: 'bug_fix',
     task_goal: 'fix board failure'
   });
@@ -27,9 +28,10 @@ const { listArtifacts, readArtifact } = require('./run-artifacts');
   const runDir = tempRunDir('subpower-schema-missing');
   writeArtifact(runDir, 'task_profile', {
     session_id: 's1',
+    producer_agent: 'workflow-1',
     primary_type: 'bug_fix'
   });
-  expectBlocked(validateArtifactShape(runDir, 'task_profile'), 'missing_required_fields');
+  expectBlocked(validateArtifactShape(runDir, 'task_profile'), 'schema_validation_failed');
 }
 
 {
@@ -55,7 +57,13 @@ const { listArtifacts, readArtifact } = require('./run-artifacts');
   });
   writeArtifact(runDir, 'closure_matrix', {
     session_id: 's1',
-    status: 'passed',
+    producer_agent: 'workflow-1',
+    close_allowed: true,
+    review_status: 'approved',
+    evidence_status: 'sufficient',
+    repo_state: 'reviewed',
+    board_state: 'not_required',
+    knowledge_state: 'context_ready',
     required_artifacts: ['evidence_manifest', 'review_decision'],
     blockers: []
   });
@@ -64,4 +72,3 @@ const { listArtifacts, readArtifact } = require('./run-artifacts');
 }
 
 console.log('run artifact tests passed');
-

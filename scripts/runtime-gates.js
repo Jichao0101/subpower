@@ -7,6 +7,7 @@ const {
   readArtifact,
   readJson,
 } = require('./run-artifacts');
+const { validate } = require('./schema-validator');
 
 const ROOT = path.resolve(__dirname, '..');
 
@@ -41,14 +42,15 @@ function validateArtifactShape(runDir, artifactName) {
   if (!hasArtifact(runDir, artifactName)) {
     return verdict('schema_gate', false, `missing_${artifactName}`);
   }
-  const req = artifactRequirements()[artifactName];
-  if (!req) {
+  const schemaPath = path.join(ROOT, 'schemas', 'run-artifacts', `${artifactName}.schema.json`);
+  if (!fs.existsSync(schemaPath)) {
     return verdict('schema_gate', false, `unknown_artifact_${artifactName}`);
   }
   const value = readArtifact(runDir, artifactName);
-  const missing = req.required_fields.filter((field) => value[field] === undefined);
-  if (missing.length > 0) {
-    return verdict('schema_gate', false, 'missing_required_fields', { artifact: artifactName, missing });
+  const schema = readJson(schemaPath);
+  const errors = validate(value, schema);
+  if (errors.length > 0) {
+    return verdict('schema_gate', false, 'schema_validation_failed', { artifact: artifactName, errors });
   }
   return verdict('schema_gate', true, 'artifact_schema_ready', { artifact: artifactName });
 }
@@ -121,15 +123,19 @@ function gateRoute(runDir) {
   if (required.gate_result !== 'ready') {
     return required;
   }
+  const shape = validateArtifactShape(runDir, 'main_route_decision');
+  if (shape.gate_result !== 'ready') {
+    return shape;
+  }
   const decision = readArtifact(runDir, 'main_route_decision');
   const point = getDecisionPoint(decision.decision_point_id);
   if (!point) {
     return verdict('route_gate', false, 'unknown_decision_point');
   }
-  if (!point.allowed_routes.includes(decision.selected_route)) {
+  if (!point.allowed_routes.includes(decision.route)) {
     return verdict('route_gate', false, 'route_not_allowed_for_decision_point', {
       decision_point_id: decision.decision_point_id,
-      selected_route: decision.selected_route,
+      route: decision.route,
     });
   }
   const artifacts = Array.from(new Set([...point.required_artifacts, ...(decision.based_on_artifacts || [])]));
@@ -142,8 +148,12 @@ function gateRoute(runDir) {
     if (result.status !== 'failed') {
       return verdict('route_gate', false, 'board_validation_failed_route_requires_failed_result');
     }
+    const assessmentShape = validateArtifactShape(runDir, 'board_failure_review');
+    if (assessmentShape.gate_result !== 'ready') {
+      return assessmentShape;
+    }
     const assessment = readArtifact(runDir, 'board_failure_review');
-    if (assessment.recommended_next !== decision.selected_route) {
+    if (assessment.recommended_next !== decision.route) {
       return verdict('route_gate', false, 'route_does_not_match_reviewer_recommendation');
     }
   }
@@ -171,6 +181,10 @@ function gateClosure(runDir) {
   if (required.gate_result !== 'ready') {
     return required;
   }
+  const closureShape = validateArtifactShape(runDir, 'closure_matrix');
+  if (closureShape.gate_result !== 'ready') {
+    return closureShape;
+  }
   const evidenceGate = gateEvidence(runDir);
   if (evidenceGate.gate_result !== 'ready') {
     return evidenceGate;
@@ -185,9 +199,12 @@ function gateClosure(runDir) {
   }
   if (hasArtifact(runDir, 'board_validation_result')) {
     const board = readArtifact(runDir, 'board_validation_result');
-    if (board.status === 'failed' && closure.status === 'passed') {
+    if (board.status === 'failed' && closure.close_allowed === true) {
       return verdict('closure_gate', false, 'cannot_pass_close_failed_board_validation');
     }
+  }
+  if (closure.close_allowed !== true) {
+    return verdict('closure_gate', false, 'closure_not_allowed');
   }
   return verdict('closure_gate', true, 'closure_ready');
 }
@@ -237,4 +254,3 @@ module.exports = {
   gateWriteback,
   validateArtifactShape,
 };
-

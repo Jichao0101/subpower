@@ -16,3 +16,4 @@ task_profile
 
 This proves the core separation between implementer, reviewer, board runner, and main-agent route ownership.
 
+Board failed paths must be assessed before routing. A failed board result cannot go directly to closure.

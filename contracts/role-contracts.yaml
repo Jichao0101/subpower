@@ -40,7 +40,30 @@
       "required_inputs": ["board_target"],
       "required_outputs": ["board_validation_result", "evidence_manifest"],
       "stop_conditions": ["missing_board_target", "invalid_collect_paths", "board_environment_unstable"]
+    },
+    {
+      "role_id": "failure-analyst",
+      "allowed_actions": ["artifact_read", "evidence_read", "failure_classification_write", "evidence_gap_recommendation_write"],
+      "denied_actions": ["repo_write", "review_decision_write", "board_execute", "closure_request", "knowledge_writeback"],
+      "required_inputs": ["evidence_manifest"],
+      "required_outputs": ["board_failure_review"],
+      "stop_conditions": ["missing_evidence", "insufficient_context", "role_boundary_violation"]
+    },
+    {
+      "role_id": "verification-manager",
+      "allowed_actions": ["artifact_read", "evidence_read", "verification_matrix_write", "verification_gap_recommendation_write"],
+      "denied_actions": ["board_execute", "repo_write", "review_decision_write", "closure_request", "knowledge_writeback"],
+      "required_inputs": ["implementation_plan", "evidence_manifest"],
+      "required_outputs": ["verification_matrix"],
+      "stop_conditions": ["missing_verification_scope", "evidence_coverage_unknown", "role_boundary_violation"]
+    },
+    {
+      "role_id": "knowledge-closer",
+      "allowed_actions": ["artifact_read", "knowledge_writeback", "writeback_receipt_write", "writeback_declined_write"],
+      "denied_actions": ["repo_write", "review_decision_write", "board_execute", "closure_request"],
+      "required_inputs": ["closure_matrix", "review_decision", "evidence_manifest"],
+      "required_outputs": ["writeback_receipt", "writeback_declined"],
+      "stop_conditions": ["closure_gate_blocked", "unreviewed_conclusion", "promotion_boundary_unclear"]
     }
   ]
 }
-

@@ -1,2 +1,16 @@
-{"$schema":"https://json-schema.org/draft/2020-12/schema","title":"main_route_decision","type":"object","required":["session_id","decision_point_id","selected_route","based_on_artifacts"],"properties":{"session_id":{"type":"string"},"decision_point_id":{"type":"string"},"selected_route":{"type":"string"},"based_on_artifacts":{"type":"array","items":{"type":"string"}}}}
-
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "main_route_decision",
+  "type": "object",
+  "required": ["session_id", "producer_agent", "decision_point_id", "assessor_artifact", "route", "reason", "based_on_artifacts"],
+  "additionalProperties": false,
+  "properties": {
+    "session_id": {"type": "string"},
+    "producer_agent": {"type": "string"},
+    "decision_point_id": {"type": "string"},
+    "assessor_artifact": {"type": "string"},
+    "route": {"enum": ["coder_rework", "planner_rework", "collect_more_evidence", "rerun_board_validation", "escalate_to_user", "close_as_environment_issue", "proceed_to_closure"]},
+    "reason": {"type": "string"},
+    "based_on_artifacts": {"type": "array", "items": {"type": "string"}}
+  }
+}

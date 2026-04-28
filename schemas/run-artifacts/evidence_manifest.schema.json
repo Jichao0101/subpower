@@ -1,2 +1,24 @@
-{"$schema":"https://json-schema.org/draft/2020-12/schema","title":"evidence_manifest","type":"object","required":["session_id","producer_agent","status","evidence"],"properties":{"session_id":{"type":"string"},"producer_agent":{"type":"string"},"status":{"enum":["sufficient","insufficient","blocked"]},"evidence":{"type":"array"}}}
-
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "evidence_manifest",
+  "type": "object",
+  "required": ["session_id", "producer_agent", "status", "evidence"],
+  "additionalProperties": false,
+  "properties": {
+    "session_id": {"type": "string"},
+    "producer_agent": {"type": "string"},
+    "status": {"enum": ["sufficient", "insufficient", "blocked"]},
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "path"],
+        "additionalProperties": false,
+        "properties": {
+          "id": {"type": "string"},
+          "path": {"type": "string"}
+        }
+      }
+    }
+  }
+}

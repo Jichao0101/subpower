@@ -1,2 +1,21 @@
-{"$schema":"https://json-schema.org/draft/2020-12/schema","title":"side_state","type":"object","required":["session_id","sides"],"properties":{"session_id":{"type":"string"},"sides":{"type":"object","required":["knowledge","repo","board"]}}}
-
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "side_state",
+  "type": "object",
+  "required": ["session_id", "producer_agent", "sides"],
+  "additionalProperties": false,
+  "properties": {
+    "session_id": {"type": "string"},
+    "producer_agent": {"type": "string"},
+    "sides": {
+      "type": "object",
+      "required": ["knowledge", "repo", "board"],
+      "additionalProperties": false,
+      "properties": {
+        "knowledge": {"enum": ["context_pending", "context_ready", "writeback_pending", "writeback_done", "synced", "blocked"]},
+        "repo": {"enum": ["untouched", "planned", "changed", "locally_verified", "reviewed", "rework_required", "merged_ready", "blocked"]},
+        "board": {"enum": ["not_required", "target_pending", "target_bound", "executed", "evidence_collected", "failed", "passed", "blocked"]}
+      }
+    }
+  }
+}

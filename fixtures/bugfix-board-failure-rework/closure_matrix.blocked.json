@@ -1,0 +1,12 @@
+{
+  "session_id": "fixture-board-failure-rework",
+  "producer_agent": "workflow-1",
+  "close_allowed": false,
+  "review_status": "approved",
+  "evidence_status": "sufficient",
+  "repo_state": "rework_required",
+  "board_state": "failed",
+  "knowledge_state": "context_ready",
+  "required_artifacts": ["evidence_manifest", "review_decision", "board_validation_result", "board_failure_review", "main_route_decision"],
+  "blockers": ["board_validation_failed", "rework_route_required"]
+}

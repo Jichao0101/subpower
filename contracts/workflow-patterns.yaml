@@ -7,6 +7,7 @@
       "default_steps": ["bind_symptoms_and_artifacts", "collect_minimum_evidence", "produce_hypotheses", "classify_failure", "emit_next_workflow_recommendation"],
       "required_inputs": ["task_profile"],
       "required_outputs": ["evidence_manifest", "next_workflow_recommendation"],
+      "optional_participants": ["failure-analyst"],
       "decision_points": ["evidence_insufficient", "requirement_ambiguous", "environment_unstable", "scope_mismatch"],
       "hard_gates": ["artifact_gate", "evidence_gate", "route_gate"],
       "allowed_next_workflows": ["bug_fix", "board_validation", "functional_review", "knowledge_writeback"]
@@ -17,6 +18,7 @@
       "default_steps": ["planner_confirms_scope", "implementer_patches", "implementer_runs_local_verification", "reviewer_reviews", "optionally_enter_board_validation"],
       "required_inputs": ["implementation_plan", "handoff_packet"],
       "required_outputs": ["code_change_manifest", "review_decision", "evidence_manifest"],
+      "optional_participants": ["verification-manager"],
       "decision_points": ["code_review_failed", "scope_mismatch", "requirement_ambiguous"],
       "hard_gates": ["role_gate", "phase_gate", "independence_gate", "artifact_gate"],
       "allowed_next_workflows": ["board_validation", "functional_review", "knowledge_writeback", "bug_fix"]
@@ -27,6 +29,7 @@
       "default_steps": ["bind_board_target", "execute_board_session", "collect_artifacts", "emit_board_validation_result", "if_failed_request_reviewer_assessment"],
       "required_inputs": ["board_target", "code_change_manifest"],
       "required_outputs": ["board_validation_result", "evidence_manifest"],
+      "optional_assessors": ["failure-analyst", "verification-manager"],
       "decision_points": ["board_validation_failed", "environment_unstable", "evidence_insufficient"],
       "hard_gates": ["board_target_gate", "evidence_gate", "route_gate"],
       "allowed_next_workflows": ["bug_fix", "incident_investigation", "functional_review", "knowledge_writeback"]
@@ -37,6 +40,7 @@
       "default_steps": ["collect_requirements", "map_acceptance_items", "inspect_evidence", "emit_compliance_matrix"],
       "required_inputs": ["evidence_manifest"],
       "required_outputs": ["review_decision", "closure_matrix"],
+      "optional_participants": ["verification-manager"],
       "decision_points": ["evidence_insufficient", "requirement_ambiguous", "closure_blocked"],
       "hard_gates": ["independence_gate", "schema_gate", "closure_gate"],
       "allowed_next_workflows": ["bug_fix", "board_validation", "knowledge_writeback"]
@@ -47,10 +51,10 @@
       "default_steps": ["verify_closure_matrix", "verify_review_decision", "write_project_or_candidate_records", "emit_receipt_or_declined"],
       "required_inputs": ["closure_matrix", "review_decision", "evidence_manifest"],
       "required_outputs": ["writeback_receipt", "writeback_declined"],
+      "optional_participants": ["knowledge-closer"],
       "decision_points": ["closure_blocked", "evidence_insufficient"],
       "hard_gates": ["writeback_gate", "closure_gate", "evidence_gate"],
       "allowed_next_workflows": []
     }
   ]
 }
-

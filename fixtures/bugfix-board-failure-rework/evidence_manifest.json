@@ -1,0 +1,15 @@
+{
+  "session_id": "fixture-board-failure-rework",
+  "producer_agent": "board-1",
+  "status": "sufficient",
+  "evidence": [
+    {
+      "id": "board-log",
+      "path": "logs/board/high_yaw_rate.log"
+    },
+    {
+      "id": "target-trace",
+      "path": "artifacts/fusion_target_trace.json"
+    }
+  ]
+}

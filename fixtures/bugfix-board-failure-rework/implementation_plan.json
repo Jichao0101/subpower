@@ -1,0 +1,6 @@
+{
+  "session_id": "fixture-board-failure-rework",
+  "producer_agent": "planner-1",
+  "repo_scope": ["src/fusion/timestamp_alignment.cpp", "tests/fusion_timestamp_alignment.test.js"],
+  "verification_plan": ["run local timestamp alignment regression", "run board high yaw-rate target stability scenario"]
+}

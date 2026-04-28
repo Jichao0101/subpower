@@ -26,6 +26,7 @@ const {
   writeBaseImplementationRun(runDir);
   writeArtifact(runDir, 'agent_invocation_manifest', {
     session_id: 's1',
+    producer_agent: 'workflow-1',
     invocations: [
       { invocation_id: 'impl-1', agent_id: 'agent-a', role_id: 'repo-implementer' },
       { invocation_id: 'review-1', agent_id: 'agent-a', role_id: 'repo-reviewer' }
@@ -53,4 +54,3 @@ const {
 }
 
 console.log('agent boundary tests passed');
-
