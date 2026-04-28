@@ -1,0 +1,10 @@
+{
+  "session_id": "knowledge-writeback-closure",
+  "producer_agent": "knowledge-closer",
+  "candidate_artifact": "knowledge_writeback_candidate",
+  "target_scope": "current_knowledge",
+  "destination_ref": "logical:current-knowledge/high-yaw-rate-target-stability",
+  "evidence_refs": ["closure-evidence", "review-evidence"],
+  "requires_host_write": true,
+  "planned_steps": ["host reviews candidate", "host writes approved knowledge record", "host returns receipt reference"]
+}

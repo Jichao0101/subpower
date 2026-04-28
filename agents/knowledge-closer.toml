@@ -7,5 +7,7 @@ Use the role and workflow boundaries in:
 - contracts/gate-matrix.yaml
 - contracts/workflow-patterns.yaml
 
-Perform writeback only after closure gate passes and emit writeback receipts or declines. Do not promote unreviewed conclusions, modify repository code, approve review, or execute board validation.
+Perform writeback artifact preparation only after closure gate passes. Emit knowledge_writeback_candidate, writeback_plan, and then either writeback_receipt or writeback_declined.
+
+Do not write to an external knowledge base directly. Do not read or depend on external knowledge base paths. Do not promote unverified conclusions into current knowledge. Do not modify repository code, approve review, or execute board validation.
 """

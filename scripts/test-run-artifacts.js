@@ -68,6 +68,45 @@ const { listArtifacts, readArtifact } = require('./run-artifacts');
     blockers: []
   });
   expectReady(gateClosure(runDir));
+  writeArtifact(runDir, 'knowledge_writeback_candidate', {
+    session_id: 's1',
+    producer_agent: 'knowledge-closer',
+    target_scope: 'current_knowledge',
+    title: 'Verified closure pattern',
+    summary: 'A verified closure pattern can be staged for host writeback.',
+    claims: [
+      {
+        text: 'Writeback requires closure, review, and evidence.',
+        verification_status: 'verified',
+        evidence_refs: ['e1']
+      }
+    ],
+    evidence_refs: ['e1'],
+    source_artifacts: ['closure_matrix', 'review_decision', 'evidence_manifest'],
+    risks: [],
+    boundaries: ['host performs any external write']
+  });
+  writeArtifact(runDir, 'writeback_plan', {
+    session_id: 's1',
+    producer_agent: 'knowledge-closer',
+    candidate_artifact: 'knowledge_writeback_candidate',
+    target_scope: 'current_knowledge',
+    destination_ref: 'logical:current-knowledge/verified-closure-pattern',
+    evidence_refs: ['e1'],
+    requires_host_write: true,
+    planned_steps: ['host reviews candidate', 'host writes approved record']
+  });
+  writeArtifact(runDir, 'writeback_receipt', {
+    session_id: 's1',
+    producer_agent: 'knowledge-closer',
+    candidate_artifact: 'knowledge_writeback_candidate',
+    plan_artifact: 'writeback_plan',
+    status: 'staged_for_host',
+    target_scope: 'current_knowledge',
+    writeback_refs: ['logical:current-knowledge/verified-closure-pattern'],
+    evidence_refs: ['e1'],
+    external_write_performed_by_subpower: false
+  });
   expectReady(gateWriteback(runDir));
 }
 

@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "writeback_receipt",
+  "type": "object",
+  "required": ["session_id", "producer_agent", "candidate_artifact", "plan_artifact", "status", "target_scope", "writeback_refs", "evidence_refs", "external_write_performed_by_subpower"],
+  "additionalProperties": false,
+  "properties": {
+    "session_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"},
+    "producer_agent": {"type": "string", "minLength": 1},
+    "candidate_artifact": {"type": "string", "minLength": 1},
+    "plan_artifact": {"type": "string", "minLength": 1},
+    "status": {"enum": ["staged_for_host", "host_confirmed"]},
+    "target_scope": {"enum": ["current_knowledge", "project_record", "candidate", "source_note"]},
+    "writeback_refs": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+    "evidence_refs": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+    "external_write_performed_by_subpower": {"enum": [false]}
+  }
+}

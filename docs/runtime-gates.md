@@ -11,7 +11,7 @@ subpower runtime gates enforce structural legality:
 - `evidence_gate`: closure and review have evidence
 - `route_gate`: route is allowed for the decision point and assessor artifacts exist
 - `closure_gate`: closure matrix is satisfiable
-- `writeback_gate`: writeback has review, evidence, and closure
+- `writeback_gate`: writeback has closure, approved review, evidence, candidate, plan, and terminal receipt or decline
 
 They do not decide root cause correctness or business acceptance.
 
@@ -25,3 +25,12 @@ The gate layer only checks structural legality. It does not judge whether an imp
 - If `board_target.json` is missing, `prompt_context.board_context` may satisfy the structural gate when prompt/context provided enough board material.
 
 Route and closure gates can require `board_failure_review.json`, `main_route_decision.json`, and `route_history.json`, but they do not select the business route.
+
+`writeback_gate` checks structure and boundaries only:
+
+- closure must already be ready
+- review must be approved
+- candidate and plan must include evidence refs
+- current knowledge candidates cannot contain unverified claims
+- writeback refs must not be external absolute knowledge-base paths
+- receipt must state that subpower did not perform the external write

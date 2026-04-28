@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "knowledge_writeback_candidate",
+  "type": "object",
+  "required": ["session_id", "producer_agent", "target_scope", "title", "summary", "claims", "evidence_refs", "source_artifacts", "risks", "boundaries"],
+  "additionalProperties": false,
+  "properties": {
+    "session_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"},
+    "producer_agent": {"type": "string", "minLength": 1},
+    "target_scope": {"enum": ["current_knowledge", "project_record", "candidate", "source_note", "none"]},
+    "title": {"type": "string", "minLength": 1},
+    "summary": {"type": "string", "minLength": 1},
+    "claims": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["text", "verification_status", "evidence_refs"],
+        "additionalProperties": false,
+        "properties": {
+          "text": {"type": "string", "minLength": 1},
+          "verification_status": {"enum": ["verified", "unverified", "risk_only"]},
+          "evidence_refs": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}
+        }
+      }
+    },
+    "evidence_refs": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+    "source_artifacts": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+    "risks": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "boundaries": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}
+  }
+}

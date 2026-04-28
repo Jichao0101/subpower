@@ -21,6 +21,10 @@
     "main_route_decision": {"required_fields": ["session_id", "producer_agent", "decision_point_id", "assessor_artifact", "route", "reason", "based_on_artifacts"]},
     "route_history": {"required_fields": ["session_id", "producer_agent", "routes"]},
     "evidence_manifest": {"required_fields": ["session_id", "producer_agent", "status", "evidence"]},
-    "closure_matrix": {"required_fields": ["session_id", "producer_agent", "close_allowed", "review_status", "evidence_status", "repo_state", "board_state", "knowledge_state", "blockers"]}
+    "closure_matrix": {"required_fields": ["session_id", "producer_agent", "close_allowed", "review_status", "evidence_status", "repo_state", "board_state", "knowledge_state", "blockers"]},
+    "knowledge_writeback_candidate": {"required_fields": ["session_id", "producer_agent", "target_scope", "title", "summary", "claims", "evidence_refs", "source_artifacts", "risks", "boundaries"]},
+    "writeback_plan": {"required_fields": ["session_id", "producer_agent", "candidate_artifact", "target_scope", "destination_ref", "evidence_refs", "requires_host_write", "planned_steps"]},
+    "writeback_receipt": {"required_fields": ["session_id", "producer_agent", "candidate_artifact", "plan_artifact", "status", "target_scope", "writeback_refs", "evidence_refs", "external_write_performed_by_subpower"]},
+    "writeback_declined": {"required_fields": ["session_id", "producer_agent", "candidate_artifact", "reason", "blockers", "evidence_refs"]}
   }
 }

@@ -1,0 +1,8 @@
+{
+  "session_id": "knowledge-writeback-closure",
+  "producer_agent": "knowledge-closer",
+  "candidate_artifact": "knowledge_writeback_candidate",
+  "reason": "Current knowledge candidate contains unverified claims.",
+  "blockers": ["unverified_current_knowledge_claim"],
+  "evidence_refs": ["closure-evidence"]
+}

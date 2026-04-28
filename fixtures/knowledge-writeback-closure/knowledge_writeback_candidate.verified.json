@@ -1,0 +1,18 @@
+{
+  "session_id": "knowledge-writeback-closure",
+  "producer_agent": "knowledge-closer",
+  "target_scope": "current_knowledge",
+  "title": "High yaw-rate target stability verification pattern",
+  "summary": "A closed workflow can be summarized as a verified pattern only when review, evidence, and closure gates passed.",
+  "claims": [
+    {
+      "text": "Current knowledge writeback requires approved review, sufficient evidence, and closure approval.",
+      "verification_status": "verified",
+      "evidence_refs": ["closure-evidence", "review-evidence"]
+    }
+  ],
+  "evidence_refs": ["closure-evidence", "review-evidence"],
+  "source_artifacts": ["closure_matrix", "review_decision", "evidence_manifest"],
+  "risks": ["Applies only to structurally closed subpower runs."],
+  "boundaries": ["Does not authorize subpower scripts to write external knowledge-base files."]
+}

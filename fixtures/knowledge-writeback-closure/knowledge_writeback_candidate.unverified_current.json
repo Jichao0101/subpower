@@ -1,0 +1,18 @@
+{
+  "session_id": "knowledge-writeback-closure",
+  "producer_agent": "knowledge-closer",
+  "target_scope": "current_knowledge",
+  "title": "Unverified current knowledge example",
+  "summary": "This candidate intentionally contains an unverified claim and must not pass writeback.",
+  "claims": [
+    {
+      "text": "An unverified project-specific conclusion is reusable current knowledge.",
+      "verification_status": "unverified",
+      "evidence_refs": ["closure-evidence"]
+    }
+  ],
+  "evidence_refs": ["closure-evidence"],
+  "source_artifacts": ["closure_matrix"],
+  "risks": ["Unverified claim must not enter current knowledge."],
+  "boundaries": ["Fixture for negative writeback gate coverage."]
+}

@@ -1,0 +1,11 @@
+{
+  "session_id": "knowledge-writeback-closure",
+  "producer_agent": "knowledge-closer",
+  "candidate_artifact": "knowledge_writeback_candidate",
+  "plan_artifact": "writeback_plan",
+  "status": "staged_for_host",
+  "target_scope": "current_knowledge",
+  "writeback_refs": ["logical:current-knowledge/high-yaw-rate-target-stability"],
+  "evidence_refs": ["closure-evidence", "review-evidence"],
+  "external_write_performed_by_subpower": false
+}

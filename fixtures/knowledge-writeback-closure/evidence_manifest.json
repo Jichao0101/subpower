@@ -1,0 +1,15 @@
+{
+  "session_id": "knowledge-writeback-closure",
+  "producer_agent": "board-runner",
+  "status": "sufficient",
+  "evidence": [
+    {
+      "id": "closure-evidence",
+      "path": "artifacts/example/closure-evidence.json"
+    },
+    {
+      "id": "review-evidence",
+      "path": "artifacts/example/review-decision.json"
+    }
+  ]
+}

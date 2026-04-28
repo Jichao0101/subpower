@@ -31,6 +31,8 @@ Use this skill when a task involves any of these conditions:
 - Do not automatically execute real board validation from scripts.
 - Do not import runtime state from another orchestration system.
 - Do not hardcode board targets, board IPs, log paths, validation commands, project metrics, or project log formats in subpower.
+- Do not directly modify an external knowledge base from subpower.
+- Do not promote unverified claims into current knowledge.
 
 ## Required operating model
 
@@ -95,6 +97,8 @@ The full workflow is driven by this skill and the host agent:
    - `close_as_environment_issue`
 12. Preserve every round in `route_history.json`; do not overwrite prior route decisions or evidence references.
 13. Close only after `closure_matrix.json` passes the closure gate. Enter `knowledge_writeback` only after closure is structurally allowed.
+14. For `knowledge_writeback`, knowledge-closer creates `knowledge_writeback_candidate.json`, `writeback_plan.json`, and then either `writeback_receipt.json` or `writeback_declined.json`.
+15. Any real knowledge-base write is performed by the host agent, user, or project-local process outside subpower. Subpower records the plan and receipt/decline only.
 
 ## Prompt-provided context extraction
 
@@ -120,6 +124,7 @@ Recommended order:
 10. Board artifacts: `board_target.json`, `board_session.json`, `board_validation_result.json`, `evidence_manifest.json`
 11. Failure-routing artifacts: `board_failure_review.json`, `main_route_decision.json`, `route_history.json`
 12. Closure artifacts: `closure_matrix.json`
+13. Writeback artifacts: `knowledge_writeback_candidate.json`, `writeback_plan.json`, `writeback_receipt.json` or `writeback_declined.json`
 
 ## Role orchestration
 
@@ -130,7 +135,7 @@ Recommended order:
 - `board-runner`: owns board session execution or manual execution guidance and board validation result.
 - `failure-analyst`: owns failure classification when board evidence needs independent assessment.
 - `verification-manager`: owns read-only verification coverage analysis.
-- `knowledge-closer`: owns writeback only after closure gates allow it.
+- `knowledge-closer`: owns writeback artifacts only after closure gates allow it; it does not directly write an external knowledge base.
 
 ## Decision points
 
@@ -166,6 +171,25 @@ Closure requires:
 
 Do not close when a failed board validation lacks reviewer/failure-analyst assessment, route decision, or route history.
 
+## Knowledge writeback rules
+
+Knowledge writeback begins only after `closure_gate` is ready.
+
+The required sequence is:
+
+1. `knowledge_writeback_candidate.json`
+2. `writeback_plan.json`
+3. `writeback_receipt.json` or `writeback_declined.json`
+
+Rules:
+
+- Subpower does not directly modify external Knowledge-Base content.
+- Subpower does not read or depend on external knowledge-base paths.
+- `current_knowledge` candidates may contain only verified claims with evidence refs.
+- Unverified claims must remain candidate/project/source scope or produce `writeback_declined.json`.
+- `writeback_plan.json` uses logical destination refs, not external absolute paths.
+- `writeback_receipt.json` must record that subpower did not perform an external write.
+
 ## Minimal questions policy
 
 - If the user already provided log paths, board target, or expected behavior, do not repeat the question.
@@ -183,3 +207,5 @@ Stop or escalate when:
 - A closure request lacks evidence, route history after decision points, or a closure matrix.
 - The task requires real board execution but no board target, validation criteria, or execution authority is available.
 - The only way to continue would require hardcoded board paths, IPs, commands, log formats, or external runtime state.
+- Writeback would require subpower to write external knowledge-base files directly.
+- A current-knowledge candidate contains unverified claims or lacks evidence refs.

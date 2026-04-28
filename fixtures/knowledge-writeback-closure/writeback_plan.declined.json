@@ -1,0 +1,10 @@
+{
+  "session_id": "knowledge-writeback-closure",
+  "producer_agent": "knowledge-closer",
+  "candidate_artifact": "knowledge_writeback_candidate",
+  "target_scope": "current_knowledge",
+  "destination_ref": "logical:current-knowledge/unverified-example",
+  "evidence_refs": ["closure-evidence"],
+  "requires_host_write": true,
+  "planned_steps": ["decline because current knowledge candidate contains unverified claims"]
+}

@@ -21,6 +21,6 @@
     "board_validation": ["board_execute", "artifact_collect", "board_validation_result_write", "evidence_write"],
     "routing": ["artifact_read", "route_decision_write"],
     "closure": ["artifact_read", "closure_request"],
-    "writeback": ["artifact_read", "knowledge_writeback", "writeback_receipt_write", "writeback_declined_write"]
+    "writeback": ["artifact_read", "knowledge_writeback_candidate_write", "writeback_plan_write", "writeback_receipt_write", "writeback_declined_write"]
   }
 }

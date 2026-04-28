@@ -18,6 +18,7 @@ Subpower defines contracts, schemas, gates, reports, install staging, and demo f
 8. Produce `board_session.json`, `board_validation_result.json`, and updated `evidence_manifest.json`.
 9. If board validation failed, produce `board_failure_review.json`, `main_route_decision.json`, and append `route_history.json`.
 10. Continue through the selected route until `closure_matrix.json` can pass closure.
+11. After closure passes, enter `knowledge_writeback` and create `knowledge_writeback_candidate.json`, `writeback_plan.json`, and either `writeback_receipt.json` or `writeback_declined.json`.
 
 ## Prompt-provided context
 
@@ -39,6 +40,7 @@ prompt_context
   -> board_target/board_session/board_validation_result/evidence_manifest
   -> board_failure_review/main_route_decision/route_history
   -> closure_matrix
+  -> knowledge_writeback_candidate/writeback_plan/writeback_receipt-or-writeback_declined
 ```
 
 `workflow_state.json` is optional but recommended. `route_history.json` is required when decision points were traversed and closure is requested.
@@ -51,7 +53,7 @@ prompt_context
 - `repo-reviewer` owns independent review and can assess failed board validation.
 - `failure-analyst` classifies board validation failure when reviewer assessment is not enough.
 - `board-runner` executes or guides board validation and records board artifacts.
-- `knowledge-closer` writes back only after closure is allowed.
+- `knowledge-closer` prepares writeback artifacts only after closure is allowed.
 
 ## Board validation failure routing
 
@@ -94,6 +96,24 @@ Scripts do not:
 - modify repository code as an automatic workflow engine
 - execute real board validation
 - hardcode board targets, board IPs, log paths, replay commands, or project log formats
+- write external Knowledge-Base files
+- read or depend on external knowledge-base paths
+- promote unverified claims into current knowledge
+
+## Knowledge writeback
+
+Knowledge writeback is a closure-after phase. Subpower only records and validates artifacts:
+
+```text
+closure_matrix.passed
+  -> knowledge_writeback_candidate
+  -> writeback_plan
+  -> writeback_receipt or writeback_declined
+```
+
+`current_knowledge` candidates must contain only verified claims with evidence refs. Unverified claims are kept out of current knowledge and should be declined or routed to a lower-confidence scope by the host workflow.
+
+`writeback_plan.destination_ref` and receipt refs are logical references for host action. They must not be external absolute paths.
 
 ## Example: board log to closure
 
@@ -110,3 +130,5 @@ Scripts do not:
 11. Implementer changes the scoped code; reviewer approves.
 12. Board validation passes.
 13. `closure_matrix.json` sets `close_allowed` to `true`, references route history, and closure gate allows close.
+14. Knowledge-closer prepares a verified writeback candidate and a host-action writeback plan.
+15. Host action is recorded as a receipt, or the writeback is declined with blockers.

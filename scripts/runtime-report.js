@@ -32,6 +32,10 @@ const EXPECTED = [
   'route_history',
   'evidence_manifest',
   'closure_matrix',
+  'knowledge_writeback_candidate',
+  'writeback_plan',
+  'writeback_receipt',
+  'writeback_declined',
 ];
 
 function recommendationFor(name, verdict) {
@@ -74,6 +78,10 @@ function nextStructuralActions(runDir) {
   const promptContext = readOptional(runDir, 'prompt_context');
   const failureReview = readOptional(runDir, 'board_failure_review');
   const routeDecision = readOptional(runDir, 'main_route_decision');
+  const closure = readOptional(runDir, 'closure_matrix');
+  const review = readOptional(runDir, 'review_decision');
+  const candidate = readOptional(runDir, 'knowledge_writeback_candidate');
+  const plan = readOptional(runDir, 'writeback_plan');
 
   if (!boardTarget) {
     const promptBoardContext = promptContext && promptContext.board_context;
@@ -121,6 +129,28 @@ function nextStructuralActions(runDir) {
       'workflow-orchestrator',
       'closure requires closure_matrix after evidence, review, board, and route state are known'
     ));
+  }
+
+  if (closure && closure.close_allowed === true && review && review.decision === 'approved') {
+    if (!candidate) {
+      actions.push(action(
+        'create_knowledge_writeback_candidate',
+        'knowledge-closer',
+        'closure is allowed and approved review exists; writeback needs a candidate artifact'
+      ));
+    } else if (!plan) {
+      actions.push(action(
+        'create_writeback_plan',
+        'knowledge-closer',
+        'knowledge_writeback_candidate exists; writeback needs a host-action plan'
+      ));
+    } else if (!hasArtifact(runDir, 'writeback_receipt') && !hasArtifact(runDir, 'writeback_declined')) {
+      actions.push(action(
+        'create_writeback_receipt_or_declined',
+        'knowledge-closer',
+        'writeback_plan exists; writeback must end with a receipt or declined artifact'
+      ));
+    }
   }
 
   return actions;

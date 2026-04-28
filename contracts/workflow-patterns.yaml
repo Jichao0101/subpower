@@ -48,9 +48,9 @@
     {
       "workflow_id": "knowledge_writeback",
       "type": "closure",
-      "default_steps": ["verify_closure_matrix", "verify_review_decision", "write_project_or_candidate_records", "emit_receipt_or_declined"],
+      "default_steps": ["verify_closure_gate", "draft_knowledge_writeback_candidate", "check_claim_verification_and_evidence_refs", "draft_writeback_plan_for_host_action", "emit_receipt_or_declined"],
       "required_inputs": ["closure_matrix", "review_decision", "evidence_manifest"],
-      "required_outputs": ["writeback_receipt", "writeback_declined"],
+      "required_outputs": ["knowledge_writeback_candidate", "writeback_plan", "writeback_receipt", "writeback_declined"],
       "optional_participants": ["knowledge-closer"],
       "decision_points": ["closure_blocked", "evidence_insufficient"],
       "hard_gates": ["writeback_gate", "closure_gate", "evidence_gate"],

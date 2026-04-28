@@ -4,6 +4,8 @@
   "required_for_reviewed_close": ["review_decision"],
   "required_for_board_required_close": ["board_validation_result"],
   "required_after_decision_point": ["route_history"],
-  "required_for_writeback": ["evidence_manifest", "review_decision", "closure_matrix"],
+  "required_for_writeback": ["evidence_manifest", "review_decision", "closure_matrix", "knowledge_writeback_candidate", "writeback_plan"],
+  "writeback_terminal_artifacts": ["writeback_receipt", "writeback_declined"],
+  "writeback_forbidden": ["external_knowledge_base_write_by_subpower", "unverified_current_knowledge_claim", "absolute_external_knowledge_path"],
   "terminal_statuses": ["passed", "closed_with_risks", "blocked", "declined", "environment_issue"]
 }

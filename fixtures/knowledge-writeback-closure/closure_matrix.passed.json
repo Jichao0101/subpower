@@ -1,0 +1,12 @@
+{
+  "session_id": "knowledge-writeback-closure",
+  "producer_agent": "workflow-orchestrator",
+  "close_allowed": true,
+  "review_status": "approved",
+  "evidence_status": "sufficient",
+  "repo_state": "reviewed",
+  "board_state": "passed",
+  "knowledge_state": "context_ready",
+  "required_artifacts": ["evidence_manifest", "review_decision"],
+  "blockers": []
+}

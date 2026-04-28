@@ -16,5 +16,7 @@
   ],
   "early_artifacts": ["prompt_context", "task_profile", "workflow_plan", "workflow_state", "side_state", "handoff_packet"],
   "board_validation_target_sources": ["board_target", "prompt_context.board_context"],
-  "route_history_required_when": ["main_route_decision_exists", "closure_after_decision_point"]
+  "route_history_required_when": ["main_route_decision_exists", "closure_after_decision_point"],
+  "writeback_artifacts": ["knowledge_writeback_candidate", "writeback_plan", "writeback_receipt", "writeback_declined"],
+  "writeback_requires": ["closure_gate_ready", "evidence_refs", "host_agent_or_user_write_authority"]
 }

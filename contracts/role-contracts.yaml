@@ -59,11 +59,11 @@
     },
     {
       "role_id": "knowledge-closer",
-      "allowed_actions": ["artifact_read", "knowledge_writeback", "writeback_receipt_write", "writeback_declined_write"],
+      "allowed_actions": ["artifact_read", "knowledge_writeback_candidate_write", "writeback_plan_write", "writeback_receipt_write", "writeback_declined_write"],
       "denied_actions": ["repo_write", "review_decision_write", "board_execute", "closure_request"],
       "required_inputs": ["closure_matrix", "review_decision", "evidence_manifest"],
-      "required_outputs": ["writeback_receipt", "writeback_declined"],
-      "stop_conditions": ["closure_gate_blocked", "unreviewed_conclusion", "promotion_boundary_unclear"]
+      "required_outputs": ["knowledge_writeback_candidate", "writeback_plan", "writeback_receipt", "writeback_declined"],
+      "stop_conditions": ["closure_gate_blocked", "unreviewed_conclusion", "promotion_boundary_unclear", "missing_evidence_refs", "external_knowledge_base_write_requested"]
     }
   ]
 }

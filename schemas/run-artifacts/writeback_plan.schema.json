@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "writeback_plan",
+  "type": "object",
+  "required": ["session_id", "producer_agent", "candidate_artifact", "target_scope", "destination_ref", "evidence_refs", "requires_host_write", "planned_steps"],
+  "additionalProperties": false,
+  "properties": {
+    "session_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"},
+    "producer_agent": {"type": "string", "minLength": 1},
+    "candidate_artifact": {"type": "string", "minLength": 1},
+    "target_scope": {"enum": ["current_knowledge", "project_record", "candidate", "source_note", "none"]},
+    "destination_ref": {"type": "string"},
+    "evidence_refs": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+    "requires_host_write": {"type": "boolean"},
+    "planned_steps": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}
+  }
+}

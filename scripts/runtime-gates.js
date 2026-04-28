@@ -224,6 +224,27 @@ function gateEvidence(runDir) {
   return verdict('evidence_gate', true, 'evidence_ready');
 }
 
+function hasEvidenceRefs(value) {
+  return Array.isArray(value.evidence_refs) && value.evidence_refs.length > 0;
+}
+
+function containsForbiddenKnowledgePath(value) {
+  if (typeof value === 'string') {
+    return value.includes('/Knowledge-Base/')
+      || value.startsWith('/mnt/')
+      || value.startsWith('/home/')
+      || value.startsWith('/Users/')
+      || /^[A-Za-z]:\\/.test(value);
+  }
+  if (Array.isArray(value)) {
+    return value.some((item) => containsForbiddenKnowledgePath(item));
+  }
+  if (value && typeof value === 'object') {
+    return Object.values(value).some((item) => containsForbiddenKnowledgePath(item));
+  }
+  return false;
+}
+
 function gateClosure(runDir) {
   const required = requireArtifacts(runDir, ['evidence_manifest', 'closure_matrix'], 'closure_gate');
   if (required.gate_result !== 'ready') {
@@ -267,7 +288,11 @@ function gateClosure(runDir) {
 }
 
 function gateWriteback(runDir) {
-  const required = requireArtifacts(runDir, ['evidence_manifest', 'review_decision', 'closure_matrix'], 'writeback_gate');
+  const required = requireArtifacts(
+    runDir,
+    ['evidence_manifest', 'review_decision', 'closure_matrix', 'knowledge_writeback_candidate', 'writeback_plan'],
+    'writeback_gate'
+  );
   if (required.gate_result !== 'ready') {
     return required;
   }
@@ -278,6 +303,58 @@ function gateWriteback(runDir) {
   const review = readArtifact(runDir, 'review_decision');
   if (review.decision !== 'approved') {
     return verdict('writeback_gate', false, 'writeback_requires_approved_review');
+  }
+  for (const artifact of ['knowledge_writeback_candidate', 'writeback_plan']) {
+    const shape = validateArtifactShape(runDir, artifact);
+    if (shape.gate_result !== 'ready') {
+      return shape;
+    }
+  }
+  const candidate = readArtifact(runDir, 'knowledge_writeback_candidate');
+  const plan = readArtifact(runDir, 'writeback_plan');
+  if (!hasEvidenceRefs(candidate) || !hasEvidenceRefs(plan)) {
+    return verdict('writeback_gate', false, 'writeback_requires_evidence_refs');
+  }
+  if (candidate.target_scope !== plan.target_scope) {
+    return verdict('writeback_gate', false, 'writeback_plan_scope_mismatch');
+  }
+  if (containsForbiddenKnowledgePath(candidate) || containsForbiddenKnowledgePath(plan)) {
+    return verdict('writeback_gate', false, 'external_knowledge_path_forbidden');
+  }
+  if (!hasArtifact(runDir, 'writeback_receipt') && !hasArtifact(runDir, 'writeback_declined')) {
+    return verdict('writeback_gate', false, 'missing_writeback_terminal_artifact', {
+      missing: ['writeback_receipt_or_writeback_declined'],
+    });
+  }
+  if (hasArtifact(runDir, 'writeback_receipt')) {
+    const claims = Array.isArray(candidate.claims) ? candidate.claims : [];
+    if (candidate.target_scope === 'current_knowledge' && claims.some((claim) => claim.verification_status !== 'verified')) {
+      return verdict('writeback_gate', false, 'unverified_claims_cannot_enter_current_knowledge');
+    }
+    const receiptShape = validateArtifactShape(runDir, 'writeback_receipt');
+    if (receiptShape.gate_result !== 'ready') {
+      return receiptShape;
+    }
+    const receipt = readArtifact(runDir, 'writeback_receipt');
+    if (!hasEvidenceRefs(receipt)) {
+      return verdict('writeback_gate', false, 'writeback_requires_evidence_refs');
+    }
+    if (receipt.external_write_performed_by_subpower !== false) {
+      return verdict('writeback_gate', false, 'subpower_must_not_write_external_knowledge_base');
+    }
+    if (containsForbiddenKnowledgePath(receipt)) {
+      return verdict('writeback_gate', false, 'external_knowledge_path_forbidden');
+    }
+  }
+  if (hasArtifact(runDir, 'writeback_declined')) {
+    const declinedShape = validateArtifactShape(runDir, 'writeback_declined');
+    if (declinedShape.gate_result !== 'ready') {
+      return declinedShape;
+    }
+    const declined = readArtifact(runDir, 'writeback_declined');
+    if (!hasEvidenceRefs(declined)) {
+      return verdict('writeback_gate', false, 'writeback_requires_evidence_refs');
+    }
   }
   return verdict('writeback_gate', true, 'writeback_allowed');
 }
