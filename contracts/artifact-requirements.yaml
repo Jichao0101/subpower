@@ -1,19 +1,25 @@
 {
   "schema": "subpower.artifact-requirements/v1",
   "artifacts": {
+    "prompt_context": {"required_fields": ["session_id", "producer_agent", "observed_symptom", "expected_behavior", "validation_criteria", "repo_scope", "board_context", "missing_context", "assumptions"]},
     "task_profile": {"required_fields": ["session_id", "producer_agent", "primary_type", "task_goal"]},
     "workflow_plan": {"required_fields": ["session_id", "producer_agent", "workflow_id", "planned_steps"]},
+    "workflow_state": {"required_fields": ["session_id", "producer_agent", "current_workflow", "current_phase", "active_role", "pending_artifacts", "completed_artifacts", "open_decision_points", "status"]},
     "agent_invocation_manifest": {"required_fields": ["session_id", "producer_agent", "invocations"]},
     "side_state": {"required_fields": ["session_id", "producer_agent", "sides"]},
     "handoff_packet": {"required_fields": ["session_id", "from_agent", "to_agent", "artifacts"]},
+    "incident_report": {"required_fields": ["session_id", "producer_agent", "observed_symptom", "evidence_refs", "summary"]},
+    "root_cause_hypotheses": {"required_fields": ["session_id", "producer_agent", "hypotheses"]},
+    "next_workflow_recommendation": {"required_fields": ["session_id", "producer_agent", "recommended_workflow", "reason", "required_artifacts"]},
     "implementation_plan": {"required_fields": ["session_id", "producer_agent", "repo_scope", "verification_plan"]},
     "code_change_manifest": {"required_fields": ["session_id", "producer_agent", "files_changed", "verification_results"]},
     "review_decision": {"required_fields": ["session_id", "producer_agent", "decision", "findings"]},
-    "board_target": {"required_fields": ["session_id", "producer_agent", "board_target_id", "run_commands", "collect_paths"]},
+    "board_target": {"required_fields": ["session_id", "producer_agent", "source", "target_id", "executor_type", "log_paths", "collect_paths", "run_commands", "expected_behavior", "validation_criteria", "constraints"]},
     "board_session": {"required_fields": ["session_id", "producer_agent", "board", "scenario", "status"]},
     "board_validation_result": {"required_fields": ["session_id", "producer_agent", "status", "evidence_refs"]},
     "board_failure_review": {"required_fields": ["session_id", "producer_agent", "failure_class", "recommended_next", "confidence", "blocking_evidence", "rationale"]},
     "main_route_decision": {"required_fields": ["session_id", "producer_agent", "decision_point_id", "assessor_artifact", "route", "reason", "based_on_artifacts"]},
+    "route_history": {"required_fields": ["session_id", "producer_agent", "routes"]},
     "evidence_manifest": {"required_fields": ["session_id", "producer_agent", "status", "evidence"]},
     "closure_matrix": {"required_fields": ["session_id", "producer_agent", "close_allowed", "review_status", "evidence_status", "repo_state", "board_state", "knowledge_state", "blockers"]}
   }

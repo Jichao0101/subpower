@@ -6,6 +6,7 @@ const path = require('path');
 
 const ROOT = path.resolve(__dirname, '..');
 const ALLOWLIST = new Set([
+  path.join('scripts', 'test-all.js'),
   path.join('scripts', 'test-no-external-runtime-dependency.js'),
   path.join('scripts', 'test-no-cutepower-dependency.js'),
 ]);

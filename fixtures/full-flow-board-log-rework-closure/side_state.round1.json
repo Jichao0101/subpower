@@ -1,0 +1,9 @@
+{
+  "session_id": "full-flow-board-log-rework-closure",
+  "producer_agent": "workflow-orchestrator",
+  "sides": {
+    "knowledge": "context_ready",
+    "repo": "reviewed",
+    "board": "failed"
+  }
+}

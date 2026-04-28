@@ -1,0 +1,13 @@
+{
+  "session_id": "full-flow-board-log-rework-closure",
+  "producer_agent": "knowledge-planner",
+  "source": "prompt",
+  "target_id": "example-high-yaw-rate-target",
+  "executor_type": "manual",
+  "log_paths": ["/logs/example/fusion/high_yaw_rate.log"],
+  "collect_paths": ["/logs/example/fusion/target_trace.json"],
+  "run_commands": [],
+  "expected_behavior": "fusion target remains stable during high yaw-rate motion",
+  "validation_criteria": ["no target jump in the provided high yaw-rate board trace"],
+  "constraints": ["fixture does not execute a real board command"]
+}

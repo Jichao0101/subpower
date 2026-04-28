@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "next_workflow_recommendation",
+  "type": "object",
+  "required": ["session_id", "producer_agent", "recommended_workflow", "reason", "required_artifacts"],
+  "additionalProperties": false,
+  "properties": {
+    "session_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"},
+    "producer_agent": {"type": "string", "minLength": 1},
+    "recommended_workflow": {"enum": ["incident_investigation", "bug_fix", "board_validation", "functional_review", "knowledge_writeback"]},
+    "reason": {"type": "string", "minLength": 1},
+    "required_artifacts": {"type": "array", "items": {"type": "string", "minLength": 1}}
+  }
+}

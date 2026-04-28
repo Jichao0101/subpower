@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "prompt_context",
+  "type": "object",
+  "required": ["session_id", "producer_agent", "observed_symptom", "expected_behavior", "validation_criteria", "repo_scope", "board_context", "missing_context", "assumptions"],
+  "additionalProperties": false,
+  "properties": {
+    "session_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"},
+    "producer_agent": {"type": "string", "minLength": 1},
+    "observed_symptom": {"type": "string"},
+    "expected_behavior": {"type": "string"},
+    "validation_criteria": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "repo_scope": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "board_context": {
+      "type": "object",
+      "required": ["provided", "target_id", "executor_type", "log_paths", "collect_paths", "run_commands", "constraints"],
+      "additionalProperties": false,
+      "properties": {
+        "provided": {"type": "boolean"},
+        "target_id": {"type": "string"},
+        "executor_type": {"enum": ["manual", "ssh", "adb", "local_script", "custom", "unknown"]},
+        "log_paths": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "collect_paths": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "run_commands": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "constraints": {"type": "array", "items": {"type": "string", "minLength": 1}}
+      }
+    },
+    "missing_context": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "assumptions": {"type": "array", "items": {"type": "string", "minLength": 1}}
+  }
+}

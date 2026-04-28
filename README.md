@@ -9,6 +9,14 @@ subpower is a subagent-first orchestration runtime for three-side workflows acro
 
 subpower governs subagent handoff, side-state synchronization, independent review, board evidence, decision points, and route legality.
 
+Full-flow agent entry:
+
+```text
+skills/using-subpower/SKILL.md
+```
+
+There is no `subpower run` command. Scripts provide validation, reports, gates, installation staging, and demos only.
+
 The runtime model is:
 
 ```text
@@ -58,6 +66,8 @@ node scripts/subpower.js demo bugfix-board-failure-rework --to .subpower/run/dem
 node scripts/subpower.js report .subpower/run/demo-bugfix-board-failure
 ```
 
+The CLI intentionally has no `run` subcommand. Full business workflow execution is started by the `using-subpower` skill, then composed by the host agent and role-specific subagents.
+
 ## Validation
 
 ```bash
@@ -77,5 +87,7 @@ node scripts/test-runtime-report.js
 node scripts/test-no-external-runtime-dependency.js
 node scripts/test-no-cutepower-dependency.js
 node scripts/test-contract-schema-consistency.js
+node scripts/test-full-flow-fixture.js
+node scripts/test-no-auto-run-engine.js
 node scripts/test-all.js
 ```

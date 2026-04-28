@@ -81,6 +81,9 @@ function main(argv = process.argv.slice(2)) {
     if (!runDir) throw new Error('usage: node scripts/subpower.js report <run-dir>');
     return buildRuntimeReport(runDir);
   }
+  if (command === 'run') {
+    throw new Error('Full business workflow execution is started by the using-subpower skill, not by a script runner.');
+  }
   throw new Error('usage: node scripts/subpower.js validate|test|gate|install|demo|report');
 }
 

@@ -82,11 +82,43 @@ function requireArtifacts(runDir, artifactNames, gate = 'artifact_gate') {
 }
 
 function gateBoardExecution(runDir) {
-  const required = requireArtifacts(runDir, ['board_target'], 'board_target_gate');
-  if (required.gate_result !== 'ready') {
-    return required;
+  if (!hasArtifact(runDir, 'board_target')) {
+    if (!hasArtifact(runDir, 'prompt_context')) {
+      return verdict('board_target_gate', false, 'missing_required_artifacts', { missing: ['board_target'] });
+    }
+    const promptShape = validateArtifactShape(runDir, 'prompt_context');
+    if (promptShape.gate_result !== 'ready') {
+      return promptShape;
+    }
+    const prompt = readArtifact(runDir, 'prompt_context');
+    const boardContext = prompt.board_context || {};
+    const hasTargetMaterial = Boolean(boardContext.target_id)
+      || (Array.isArray(boardContext.log_paths) && boardContext.log_paths.length > 0)
+      || (Array.isArray(boardContext.collect_paths) && boardContext.collect_paths.length > 0);
+    const hasExpectedMaterial = Boolean(prompt.expected_behavior)
+      || (Array.isArray(prompt.validation_criteria) && prompt.validation_criteria.length > 0);
+    if (boardContext.provided !== true || !hasTargetMaterial || !hasExpectedMaterial) {
+      return verdict('board_target_gate', false, 'missing_board_target_context');
+    }
+    return verdict('board_target_gate', true, 'prompt_board_context_ready');
   }
-  return validateArtifactShape(runDir, 'board_target');
+  const shape = validateArtifactShape(runDir, 'board_target');
+  if (shape.gate_result !== 'ready') {
+    return shape;
+  }
+  const target = readArtifact(runDir, 'board_target');
+  const hasTargetMaterial = Boolean(target.target_id)
+    || (Array.isArray(target.log_paths) && target.log_paths.length > 0)
+    || (Array.isArray(target.collect_paths) && target.collect_paths.length > 0);
+  const hasExpectedMaterial = Boolean(target.expected_behavior)
+    || (Array.isArray(target.validation_criteria) && target.validation_criteria.length > 0);
+  if (!hasTargetMaterial) {
+    return verdict('board_target_gate', false, 'missing_board_target_material');
+  }
+  if (!hasExpectedMaterial) {
+    return verdict('board_target_gate', false, 'missing_board_expected_behavior');
+  }
+  return verdict('board_target_gate', true, 'board_target_ready');
 }
 
 function findInvocation(manifest, producerAgent) {
@@ -157,6 +189,22 @@ function gateRoute(runDir) {
       return verdict('route_gate', false, 'route_does_not_match_reviewer_recommendation');
     }
   }
+  if (hasArtifact(runDir, 'route_history')) {
+    const historyShape = validateArtifactShape(runDir, 'route_history');
+    if (historyShape.gate_result !== 'ready') {
+      return historyShape;
+    }
+    const history = readArtifact(runDir, 'route_history');
+    const found = (history.routes || []).some((route) => (
+      route.decision_point_id === decision.decision_point_id
+      && route.assessor_artifact === decision.assessor_artifact
+      && route.route === decision.route
+      && route.reason === decision.reason
+    ));
+    if (!found) {
+      return verdict('route_gate', false, 'route_history_missing_decision');
+    }
+  }
   return verdict('route_gate', true, 'route_allowed');
 }
 
@@ -201,6 +249,15 @@ function gateClosure(runDir) {
     const board = readArtifact(runDir, 'board_validation_result');
     if (board.status === 'failed' && closure.close_allowed === true) {
       return verdict('closure_gate', false, 'cannot_pass_close_failed_board_validation');
+    }
+  }
+  if (hasArtifact(runDir, 'main_route_decision')) {
+    if (!hasArtifact(runDir, 'route_history')) {
+      return verdict('closure_gate', false, 'route_history_required_after_decision_point');
+    }
+    const historyShape = validateArtifactShape(runDir, 'route_history');
+    if (historyShape.gate_result !== 'ready') {
+      return historyShape;
     }
   }
   if (closure.close_allowed !== true) {

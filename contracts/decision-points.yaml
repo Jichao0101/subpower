@@ -8,7 +8,7 @@
       "required_artifacts": ["board_validation_result", "evidence_manifest", "board_failure_review"],
       "decision_owner": "workflow-orchestrator",
       "allowed_routes": ["coder_rework", "planner_rework", "collect_more_evidence", "rerun_board_validation", "escalate_to_user", "close_as_environment_issue"],
-      "route_gate": "board_failure_review_exists_and_route_allowed",
+      "route_gate": "board_failure_review_exists_route_allowed_and_history_appended",
       "terminal_options": ["close_as_environment_issue", "escalate_to_user"]
     },
     {
@@ -18,7 +18,7 @@
       "required_artifacts": ["review_decision", "code_change_manifest"],
       "decision_owner": "workflow-orchestrator",
       "allowed_routes": ["coder_rework", "planner_rework", "collect_more_evidence", "escalate_to_user"],
-      "route_gate": "reviewer_findings_required",
+      "route_gate": "reviewer_findings_required_and_history_appended",
       "terminal_options": ["escalate_to_user"]
     },
     {
@@ -28,7 +28,7 @@
       "required_artifacts": ["evidence_manifest"],
       "decision_owner": "workflow-orchestrator",
       "allowed_routes": ["collect_more_evidence", "rerun_board_validation", "planner_rework", "escalate_to_user"],
-      "route_gate": "evidence_gap_declared",
+      "route_gate": "evidence_gap_declared_and_history_appended",
       "terminal_options": ["escalate_to_user"]
     },
     {
@@ -38,7 +38,7 @@
       "required_artifacts": ["implementation_plan", "code_change_manifest"],
       "decision_owner": "workflow-orchestrator",
       "allowed_routes": ["planner_rework", "escalate_to_user", "stop"],
-      "route_gate": "scope_violation_recorded",
+      "route_gate": "scope_violation_recorded_and_history_appended",
       "terminal_options": ["stop", "escalate_to_user"]
     },
     {
@@ -48,7 +48,7 @@
       "required_artifacts": ["board_validation_result", "evidence_manifest"],
       "decision_owner": "workflow-orchestrator",
       "allowed_routes": ["rerun_board_validation", "collect_more_evidence", "close_as_environment_issue", "escalate_to_user"],
-      "route_gate": "environment_evidence_required",
+      "route_gate": "environment_evidence_required_and_history_appended",
       "terminal_options": ["close_as_environment_issue", "escalate_to_user"]
     },
     {
@@ -58,7 +58,7 @@
       "required_artifacts": ["task_profile"],
       "decision_owner": "workflow-orchestrator",
       "allowed_routes": ["planner_rework", "escalate_to_user", "functional_review"],
-      "route_gate": "ambiguity_recorded",
+      "route_gate": "ambiguity_recorded_and_history_appended",
       "terminal_options": ["escalate_to_user"]
     },
     {
@@ -68,7 +68,7 @@
       "required_artifacts": ["closure_matrix", "review_decision", "evidence_manifest"],
       "decision_owner": "workflow-orchestrator",
       "allowed_routes": ["collect_more_evidence", "planner_rework", "coder_rework", "writeback_declined", "escalate_to_user"],
-      "route_gate": "closure_blockers_required",
+      "route_gate": "closure_blockers_required_and_history_appended",
       "terminal_options": ["writeback_declined", "escalate_to_user"]
     }
   ]

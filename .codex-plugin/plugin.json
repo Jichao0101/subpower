@@ -1,7 +1,7 @@
 {
   "name": "subpower",
   "version": "0.1.0",
-  "description": "Subagent-first three-side orchestration runtime for knowledge, repository, and board validation workflows.",
+  "description": "Subagent-first three-side orchestration runtime. Use using-subpower as the full-flow entry; scripts do not execute the business workflow automatically.",
   "author": {
     "name": "Jichao"
   },
@@ -19,14 +19,13 @@
   "agents": "./agents/",
   "interface": {
     "displayName": "subpower",
-    "shortDescription": "Subagent-first orchestration runtime for three-side workflows.",
+    "shortDescription": "Use using-subpower as the full-flow entry for complex three-side tasks.",
     "developerName": "Jichao",
     "category": "Productivity",
     "capabilities": [
       "Read",
       "Write"
     ],
-    "defaultPrompt": "Use subpower when a task needs subagent handoff, board evidence, independent review, decision-point routing, or three-side closure."
+    "defaultPrompt": "Use skills/using-subpower/SKILL.md as the full-flow entry for complex three-side tasks. Do not expect scripts to execute the business workflow automatically."
   }
 }
-

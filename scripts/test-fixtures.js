@@ -36,6 +36,8 @@ const fixtureSchemas = {
   'board_failure_review.plan_mismatch.json': 'board_failure_review',
   'main_route_decision.coder_rework.json': 'main_route_decision',
   'main_route_decision.planner_rework.json': 'main_route_decision',
+  'route_history.coder_rework.json': 'route_history',
+  'route_history.planner_rework.json': 'route_history',
   'closure_matrix.blocked.json': 'closure_matrix'
 };
 
@@ -64,6 +66,7 @@ function writeCommon(run) {
   writeCommon(run);
   writeArtifact(run, 'board_failure_review', read('board_failure_review.implementation_defect.json'));
   writeArtifact(run, 'main_route_decision', read('main_route_decision.coder_rework.json'));
+  writeArtifact(run, 'route_history', read('route_history.coder_rework.json'));
   expectReady(gateRoute(run));
 }
 
@@ -72,6 +75,7 @@ function writeCommon(run) {
   writeCommon(run);
   writeArtifact(run, 'board_failure_review', read('board_failure_review.plan_mismatch.json'));
   writeArtifact(run, 'main_route_decision', read('main_route_decision.planner_rework.json'));
+  writeArtifact(run, 'route_history', read('route_history.planner_rework.json'));
   expectReady(gateRoute(run));
 }
 
@@ -81,6 +85,7 @@ function writeCommon(run) {
   writeArtifact(run, 'review_decision', read('review_decision.json'));
   writeArtifact(run, 'board_failure_review', read('board_failure_review.implementation_defect.json'));
   writeArtifact(run, 'main_route_decision', read('main_route_decision.coder_rework.json'));
+  writeArtifact(run, 'route_history', read('route_history.coder_rework.json'));
   writeArtifact(run, 'closure_matrix', read('closure_matrix.blocked.json'));
   expectBlocked(gateClosure(run), 'closure_has_blockers');
 }

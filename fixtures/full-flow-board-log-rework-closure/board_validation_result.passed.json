@@ -1,0 +1,6 @@
+{
+  "session_id": "full-flow-board-log-rework-closure",
+  "producer_agent": "board-runner",
+  "status": "passed",
+  "evidence_refs": ["/logs/example/fusion/high_yaw_rate.after_rework.log", "/logs/example/fusion/target_trace.after_rework.json"]
+}

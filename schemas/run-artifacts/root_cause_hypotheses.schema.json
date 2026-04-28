@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "root_cause_hypotheses",
+  "type": "object",
+  "required": ["session_id", "producer_agent", "hypotheses"],
+  "additionalProperties": false,
+  "properties": {
+    "session_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"},
+    "producer_agent": {"type": "string", "minLength": 1},
+    "hypotheses": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "summary", "evidence_refs", "confidence"],
+        "additionalProperties": false,
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "summary": {"type": "string", "minLength": 1},
+          "evidence_refs": {"type": "array", "items": {"type": "string", "minLength": 1}},
+          "confidence": {"enum": ["low", "medium", "high"]}
+        }
+      }
+    }
+  }
+}

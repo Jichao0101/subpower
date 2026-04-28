@@ -1,0 +1,7 @@
+{
+  "session_id": "full-flow-board-log-rework-closure",
+  "producer_agent": "board-runner",
+  "board": "example-high-yaw-rate-target",
+  "scenario": "manual rerun using /logs/example/fusion/high_yaw_rate.log",
+  "status": "completed"
+}

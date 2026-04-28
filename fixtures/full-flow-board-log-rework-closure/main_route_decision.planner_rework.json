@@ -1,0 +1,9 @@
+{
+  "session_id": "full-flow-board-log-rework-closure",
+  "producer_agent": "workflow-orchestrator",
+  "decision_point_id": "board_validation_failed",
+  "assessor_artifact": "board_failure_review",
+  "route": "planner_rework",
+  "reason": "Failure assessment classified the failed board validation as a plan mismatch.",
+  "based_on_artifacts": ["board_validation_result", "evidence_manifest", "board_failure_review"]
+}

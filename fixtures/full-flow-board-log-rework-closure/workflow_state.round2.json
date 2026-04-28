@@ -1,0 +1,11 @@
+{
+  "session_id": "full-flow-board-log-rework-closure",
+  "producer_agent": "workflow-orchestrator",
+  "current_workflow": "bug_fix",
+  "current_phase": "planner_rework",
+  "active_role": "knowledge-planner",
+  "pending_artifacts": ["implementation_plan", "code_change_manifest", "review_decision", "board_validation_result", "closure_matrix"],
+  "completed_artifacts": ["route_history"],
+  "open_decision_points": [],
+  "status": "active"
+}

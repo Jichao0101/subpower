@@ -75,6 +75,11 @@ function normalizeFixtureArtifactName(fileName, options = {}) {
     if (route === 'planner_rework' && fileName === 'main_route_decision.planner_rework.json') return 'main_route_decision.json';
     return null;
   }
+  if (fileName.startsWith('route_history.')) {
+    if (route === 'coder_rework' && fileName === 'route_history.coder_rework.json') return 'route_history.json';
+    if (route === 'planner_rework' && fileName === 'route_history.planner_rework.json') return 'route_history.json';
+    return null;
+  }
   return fileName;
 }
 

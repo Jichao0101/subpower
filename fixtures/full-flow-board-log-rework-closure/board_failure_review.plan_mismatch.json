@@ -1,0 +1,9 @@
+{
+  "session_id": "full-flow-board-log-rework-closure",
+  "producer_agent": "failure-analyst",
+  "failure_class": "plan_mismatch",
+  "recommended_next": "planner_rework",
+  "confidence": 0.76,
+  "blocking_evidence": ["/logs/example/fusion/target_trace.json"],
+  "rationale": ["Round 1 addressed timestamp alignment but the failed trace still indicates motion-related residual error."]
+}

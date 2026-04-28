@@ -4,6 +4,8 @@ This repository is the development source for subpower. `.codex-plugin/plugin.js
 
 `scripts/install-plugin.js` is a local staging utility. It copies plugin files into a target directory for testing; it is not a formal marketplace publication process.
 
+After staging, the full-flow entry is `skills/using-subpower/SKILL.md`. There is no `subpower run` command; scripts provide validation, reports, gates, installation staging, and demos only.
+
 Core commands match [../INSTALL.md](../INSTALL.md):
 
 ```bash

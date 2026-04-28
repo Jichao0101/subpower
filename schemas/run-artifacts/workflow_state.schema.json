@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "workflow_state",
+  "type": "object",
+  "required": ["session_id", "producer_agent", "current_workflow", "current_phase", "active_role", "pending_artifacts", "completed_artifacts", "open_decision_points", "status"],
+  "additionalProperties": false,
+  "properties": {
+    "session_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"},
+    "producer_agent": {"type": "string", "minLength": 1},
+    "current_workflow": {"enum": ["incident_investigation", "bug_fix", "board_validation", "functional_review", "knowledge_writeback"]},
+    "current_phase": {"type": "string", "minLength": 1},
+    "active_role": {"type": "string", "minLength": 1},
+    "pending_artifacts": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "completed_artifacts": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "open_decision_points": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "status": {"enum": ["active", "blocked", "ready_for_review", "ready_for_closure", "closed"]}
+  }
+}

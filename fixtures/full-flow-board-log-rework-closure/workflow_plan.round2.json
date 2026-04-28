@@ -1,0 +1,6 @@
+{
+  "session_id": "full-flow-board-log-rework-closure",
+  "producer_agent": "workflow-orchestrator",
+  "workflow_id": "bug_fix",
+  "planned_steps": ["planner_rework_for_ego_motion_compensation", "implement_round2", "review_round2", "rerun_board_validation", "request_closure"]
+}

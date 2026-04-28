@@ -3,7 +3,7 @@
   "required_for_close": ["evidence_manifest", "closure_matrix"],
   "required_for_reviewed_close": ["review_decision"],
   "required_for_board_required_close": ["board_validation_result"],
+  "required_after_decision_point": ["route_history"],
   "required_for_writeback": ["evidence_manifest", "review_decision", "closure_matrix"],
   "terminal_statuses": ["passed", "closed_with_risks", "blocked", "declined", "environment_issue"]
 }
-

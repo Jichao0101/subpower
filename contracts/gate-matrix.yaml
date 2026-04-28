@@ -14,6 +14,7 @@
     "writeback_gate"
   ],
   "phase_actions": {
+    "intake": ["context_read", "workflow_plan_write"],
     "planning": ["context_read", "implementation_plan_write", "board_target_write", "workflow_plan_write", "verification_matrix_write", "verification_gap_recommendation_write"],
     "implementation": ["repo_write", "verification_exec", "code_change_manifest_write", "evidence_write"],
     "review": ["artifact_read", "review_decision_write", "board_failure_review_write", "evidence_read", "failure_classification_write", "evidence_gap_recommendation_write"],

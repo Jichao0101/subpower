@@ -1,7 +1,13 @@
 {
   "session_id": "fixture-board-failure-rework",
   "producer_agent": "planner-1",
-  "board_target_id": "fusion-high-yaw-rate-target-stability",
-  "run_commands": ["./run_board_validation --scenario high_yaw_rate_target_jump"],
-  "collect_paths": ["logs/board/high_yaw_rate.log", "artifacts/fusion_target_trace.json"]
+  "source": "prompt",
+  "target_id": "fusion-high-yaw-rate-target-stability",
+  "executor_type": "manual",
+  "log_paths": ["/logs/example/fusion/high_yaw_rate.log"],
+  "collect_paths": ["/logs/example/fusion/fusion_target_trace.json"],
+  "run_commands": [],
+  "expected_behavior": "fusion target remains stable under high yaw-rate",
+  "validation_criteria": ["no target jump in provided high yaw-rate trace"],
+  "constraints": ["example fixture path only"]
 }

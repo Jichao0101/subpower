@@ -10,9 +10,11 @@
     {"knowledge": ["context_ready", "writeback_done", "synced"], "repo": ["untouched", "reviewed"], "board": ["evidence_collected", "blocked"], "requires_terminal_route": true}
   ],
   "block_states": [
-    {"board": "target_pending", "reason": "board_required_without_target"},
+    {"board": "target_pending", "reason": "board_required_without_prompt_or_artifact_target"},
     {"board": "failed", "reason": "board_failed_requires_assessment"},
     {"repo": "rework_required", "reason": "review_requires_rework"}
-  ]
+  ],
+  "early_artifacts": ["prompt_context", "task_profile", "workflow_plan", "workflow_state", "side_state", "handoff_packet"],
+  "board_validation_target_sources": ["board_target", "prompt_context.board_context"],
+  "route_history_required_when": ["main_route_decision_exists", "closure_after_decision_point"]
 }
-

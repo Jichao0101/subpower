@@ -1,0 +1,6 @@
+{
+  "session_id": "full-flow-board-log-rework-closure",
+  "producer_agent": "workflow-orchestrator",
+  "workflow_id": "incident_investigation",
+  "planned_steps": ["extract_prompt_context", "investigate_board_log_symptom", "plan_timestamp_alignment_fix", "implement_round1", "review_round1", "run_board_validation_round1", "assess_failed_board_result"]
+}

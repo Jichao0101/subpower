@@ -1,0 +1,7 @@
+{
+  "session_id": "full-flow-board-log-rework-closure",
+  "producer_agent": "knowledge-planner",
+  "recommended_workflow": "bug_fix",
+  "reason": "The incident hypothesis is specific enough to plan a scoped timestamp alignment fix.",
+  "required_artifacts": ["implementation_plan", "code_change_manifest", "review_decision"]
+}

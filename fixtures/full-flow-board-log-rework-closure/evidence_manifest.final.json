@@ -1,0 +1,23 @@
+{
+  "session_id": "full-flow-board-log-rework-closure",
+  "producer_agent": "board-runner",
+  "status": "sufficient",
+  "evidence": [
+    {
+      "id": "input-board-log",
+      "path": "/logs/example/fusion/high_yaw_rate.log"
+    },
+    {
+      "id": "round1-failed-trace",
+      "path": "/logs/example/fusion/target_trace.json"
+    },
+    {
+      "id": "round2-passed-log",
+      "path": "/logs/example/fusion/high_yaw_rate.after_rework.log"
+    },
+    {
+      "id": "route-history",
+      "path": "route_history.final.json"
+    }
+  ]
+}

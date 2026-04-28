@@ -18,7 +18,10 @@ const tests = [
   'scripts/test-schema-diagnostics.js',
   'scripts/test-runtime-report.js',
   'scripts/test-no-external-runtime-dependency.js',
+  'scripts/test-no-cutepower-dependency.js',
   'scripts/test-contract-schema-consistency.js',
+  'scripts/test-full-flow-fixture.js',
+  'scripts/test-no-auto-run-engine.js',
 ];
 
 for (const test of tests) {

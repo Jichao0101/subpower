@@ -6,6 +6,10 @@ Agents should read [INSTALL.md](./INSTALL.md) before attempting to use subpower 
 
 This repository is the development source. Runtime use should come from an installed or staged plugin copy after install checks pass.
 
+The full-flow entry for complex three-side tasks is `skills/using-subpower/SKILL.md`.
+
+There is no `subpower run` command. Scripts provide structural validation, runtime gates, runtime reports, install staging, and demo fixture support only. The host agent remains responsible for composing the workflow and invoking role-specific subagents.
+
 ## Runtime Boundary
 
 - `contracts/` is the active orchestration truth source.
