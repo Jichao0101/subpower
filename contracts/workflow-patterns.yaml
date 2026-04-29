@@ -9,7 +9,7 @@
       "required_outputs": ["incident_report", "root_cause_hypotheses", "evidence_manifest", "next_workflow_recommendation"],
       "optional_participants": ["failure-analyst"],
       "decision_points": ["evidence_insufficient", "requirement_ambiguous", "environment_unstable", "scope_mismatch"],
-      "hard_gates": ["artifact_gate", "evidence_gate", "route_gate"],
+      "hard_gates": ["subagent_execution_gate", "artifact_gate", "evidence_gate", "route_gate"],
       "allowed_next_workflows": ["bug_fix", "board_validation", "functional_review", "knowledge_writeback"]
     },
     {
@@ -20,7 +20,7 @@
       "required_outputs": ["code_change_manifest", "review_decision", "evidence_manifest"],
       "optional_participants": ["verification-manager"],
       "decision_points": ["code_review_failed", "scope_mismatch", "requirement_ambiguous"],
-      "hard_gates": ["role_gate", "phase_gate", "independence_gate", "artifact_gate"],
+      "hard_gates": ["subagent_execution_gate", "role_gate", "phase_gate", "independence_gate", "artifact_gate"],
       "allowed_next_workflows": ["board_validation", "functional_review", "knowledge_writeback", "bug_fix"]
     },
     {
@@ -31,7 +31,7 @@
       "required_outputs": ["board_validation_result", "evidence_manifest"],
       "optional_assessors": ["repo-reviewer", "failure-analyst", "verification-manager"],
       "decision_points": ["board_validation_failed", "environment_unstable", "evidence_insufficient"],
-      "hard_gates": ["board_target_gate", "evidence_gate", "route_gate"],
+      "hard_gates": ["subagent_execution_gate", "board_target_gate", "evidence_gate", "route_gate"],
       "allowed_next_workflows": ["bug_fix", "incident_investigation", "functional_review", "knowledge_writeback"]
     },
     {
@@ -42,7 +42,7 @@
       "required_outputs": ["review_decision", "closure_matrix"],
       "optional_participants": ["verification-manager"],
       "decision_points": ["evidence_insufficient", "requirement_ambiguous", "closure_blocked"],
-      "hard_gates": ["schema_gate", "closure_gate"],
+      "hard_gates": ["subagent_execution_gate", "schema_gate", "closure_gate"],
       "allowed_next_workflows": ["bug_fix", "board_validation", "knowledge_writeback"]
     },
     {
@@ -50,10 +50,10 @@
       "type": "closure",
       "default_steps": ["verify_closure_gate", "draft_knowledge_writeback_candidate", "check_claim_verification_and_evidence_refs", "draft_writeback_plan_for_host_action", "emit_receipt_or_declined"],
       "required_inputs": ["closure_matrix", "review_decision", "evidence_manifest"],
-      "required_outputs": ["knowledge_writeback_candidate", "writeback_plan", "writeback_receipt", "writeback_declined"],
+      "required_outputs": ["knowledge_writeback_candidate", "writeback_plan", "writeback_receipt_or_declined"],
       "optional_participants": ["knowledge-closer"],
       "decision_points": ["closure_blocked", "evidence_insufficient"],
-      "hard_gates": ["writeback_gate", "closure_gate", "evidence_gate"],
+      "hard_gates": ["subagent_execution_gate", "writeback_gate", "closure_gate", "evidence_gate"],
       "allowed_next_workflows": []
     }
   ]

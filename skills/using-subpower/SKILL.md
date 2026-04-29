@@ -57,8 +57,11 @@ The full workflow is driven by this skill through host orchestration and role-sp
 - Role-specific work must be delegated where the runtime supports subagent spawning.
 - Implementation, review, verification, board failure analysis, and knowledge writeback assessment require role separation.
 - Record execution mode in `subagent_execution_status.json` for subpower-invoked work.
+- Record `execution_evidence_status` and `critical_host_participation` in `subagent_execution_status.json`.
+- Record per-role invocation evidence in `agent_invocation_manifest.json`. Complete execution claims require concrete runtime handoff/spawn evidence; declared-only, host-only, or synthetic fixture entries are structural evidence only.
 - If subagents cannot be spawned, use `host_only_fallback` degraded mode, set `degraded: true`, record `fallback_reason` and `degradation_reason`, and do not claim complete subagent-first execution.
 - Host-only fallback may state `completed_under_subpower_contracts_with_host_only_fallback: true`; it must not state `completed_as_subagent_first_execution`, `completed_by_subpower`, or `complete_subpower_execution`.
+- If the host agent performs integration, final validation, implementation, review, verification, board execution, failure analysis, or writeback assessment, record the scope in `critical_host_participation`. Undisclosed host participation blocks gates; independence-affecting host participation blocks complete execution claims.
 
 ## Full-flow procedure
 

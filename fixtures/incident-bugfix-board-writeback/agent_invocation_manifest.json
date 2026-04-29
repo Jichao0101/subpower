@@ -2,13 +2,77 @@
   "session_id": "incident-bugfix-board-writeback",
   "producer_agent": "workflow-orchestrator",
   "invocations": [
-    {"invocation_id": "knowledge-planner", "agent_id": "agent-planner", "role_id": "knowledge-planner"},
-    {"invocation_id": "repo-implementer", "agent_id": "agent-implementer", "role_id": "repo-implementer"},
-    {"invocation_id": "repo-reviewer", "agent_id": "agent-reviewer", "role_id": "repo-reviewer"},
-    {"invocation_id": "verification-manager", "agent_id": "agent-verification", "role_id": "verification-manager"},
-    {"invocation_id": "board-runner", "agent_id": "agent-board", "role_id": "board-runner"},
-    {"invocation_id": "failure-analyst", "agent_id": "agent-failure", "role_id": "failure-analyst"},
-    {"invocation_id": "knowledge-closer", "agent_id": "agent-closer", "role_id": "knowledge-closer"},
-    {"invocation_id": "workflow-orchestrator", "agent_id": "agent-orchestrator", "role_id": "workflow-orchestrator"}
+    {
+      "invocation_id": "knowledge-planner",
+      "agent_id": "agent-planner",
+      "role_id": "knowledge-planner",
+      "execution_evidence": {
+        "evidence_type": "synthetic_fixture",
+        "evidence_ref": "fixture:incident-bugfix-board-writeback/knowledge-planner"
+      }
+    },
+    {
+      "invocation_id": "repo-implementer",
+      "agent_id": "agent-implementer",
+      "role_id": "repo-implementer",
+      "execution_evidence": {
+        "evidence_type": "synthetic_fixture",
+        "evidence_ref": "fixture:incident-bugfix-board-writeback/repo-implementer"
+      }
+    },
+    {
+      "invocation_id": "repo-reviewer",
+      "agent_id": "agent-reviewer",
+      "role_id": "repo-reviewer",
+      "execution_evidence": {
+        "evidence_type": "synthetic_fixture",
+        "evidence_ref": "fixture:incident-bugfix-board-writeback/repo-reviewer"
+      }
+    },
+    {
+      "invocation_id": "verification-manager",
+      "agent_id": "agent-verification",
+      "role_id": "verification-manager",
+      "execution_evidence": {
+        "evidence_type": "synthetic_fixture",
+        "evidence_ref": "fixture:incident-bugfix-board-writeback/verification-manager"
+      }
+    },
+    {
+      "invocation_id": "board-runner",
+      "agent_id": "agent-board",
+      "role_id": "board-runner",
+      "execution_evidence": {
+        "evidence_type": "synthetic_fixture",
+        "evidence_ref": "fixture:incident-bugfix-board-writeback/board-runner"
+      }
+    },
+    {
+      "invocation_id": "failure-analyst",
+      "agent_id": "agent-failure",
+      "role_id": "failure-analyst",
+      "execution_evidence": {
+        "evidence_type": "synthetic_fixture",
+        "evidence_ref": "fixture:incident-bugfix-board-writeback/failure-analyst"
+      }
+    },
+    {
+      "invocation_id": "knowledge-closer",
+      "agent_id": "agent-closer",
+      "role_id": "knowledge-closer",
+      "execution_evidence": {
+        "evidence_type": "synthetic_fixture",
+        "evidence_ref": "fixture:incident-bugfix-board-writeback/knowledge-closer"
+      }
+    },
+    {
+      "invocation_id": "workflow-orchestrator",
+      "agent_id": "agent-orchestrator",
+      "role_id": "workflow-orchestrator",
+      "execution_evidence": {
+        "evidence_type": "synthetic_fixture",
+        "evidence_ref": "fixture:incident-bugfix-board-writeback/workflow-orchestrator"
+      }
+    }
   ]
 }

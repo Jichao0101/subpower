@@ -11,6 +11,8 @@ subpower governs subagent handoff, side-state synchronization, independent revie
 
 An explicit user instruction such as `use subpower` or `按 subpower 处理` authorizes subagent-first orchestration. The host agent is orchestration-only: it composes the workflow, delegates to role-specific subagents, and records routes. Host-only fallback is degraded/non-complete and must be labeled that way.
 
+Complete subpower execution claims require auditable role execution evidence in `subagent_execution_status.json` and `agent_invocation_manifest.json`. Declared role names, host-only fallback, synthetic fixtures, demo materialization, reports, or structural gate success are not enough to claim complete subagent-first execution.
+
 Full-flow agent entry:
 
 ```text

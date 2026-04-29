@@ -11,12 +11,23 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["invocation_id", "agent_id", "role_id"],
+        "required": ["invocation_id", "agent_id", "role_id", "execution_evidence"],
         "additionalProperties": false,
         "properties": {
           "invocation_id": {"type": "string", "minLength": 1},
           "agent_id": {"type": "string", "minLength": 1},
-          "role_id": {"type": "string", "minLength": 1}
+          "role_id": {"type": "string", "minLength": 1},
+          "execution_evidence": {
+            "type": "object",
+            "required": ["evidence_type", "evidence_ref"],
+            "additionalProperties": false,
+            "properties": {
+              "evidence_type": {
+                "enum": ["runtime_spawn", "runtime_handoff", "manual_external", "synthetic_fixture", "declared_only", "host_only"]
+              },
+              "evidence_ref": {"type": ["string", "null"], "minLength": 1}
+            }
+          }
         }
       }
     }

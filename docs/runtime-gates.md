@@ -7,7 +7,7 @@ subpower runtime gates enforce structural legality:
 - `artifact_gate`: required artifacts exist
 - `schema_gate`: JSON artifact shape is valid for the supported schema subset
 - `independence_gate`: implementer and reviewer are separate invocations
-- `subagent_execution_gate`: explicit subpower invocation has subagent execution status, role separation evidence, or degraded host-only fallback
+- `subagent_execution_gate`: explicit subpower invocation has execution status plus either concrete role execution evidence for complete claims or an explicitly degraded fallback/non-complete state
 - `board_target_gate`: board execution has prompt/context-derived board target material
 - `evidence_gate`: closure and review have evidence
 - `route_gate`: route is allowed for the decision point and assessor artifacts exist
@@ -21,8 +21,10 @@ The gate layer only checks structural legality. It does not judge whether an imp
 `subagent_execution_gate` enforces the subagent-first contract:
 
 - explicit `use subpower` / `按 subpower 处理` requires `subagent_execution_status.json`
-- `spawned_subagents` can claim complete subagent-first execution only when role separation evidence exists
+- `spawned_subagents` can claim complete subagent-first execution only when role separation evidence and concrete invocation evidence exist
 - `host_only_fallback` must be degraded and must not claim complete subpower execution
+- `declared_only`, `synthetic_fixture`, and `host_only` invocation evidence cannot support a complete execution claim
+- undisclosed host participation in implementation, review, verification, board execution, failure analysis, or writeback assessment blocks the gate
 - missing actor metadata is treated as insufficient independence evidence, not silent success
 
 `board_target_gate` checks minimum structural readiness only:

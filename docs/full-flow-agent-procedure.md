@@ -50,6 +50,9 @@ prompt_context
 ## Role handoff model
 
 - The host agent composes, routes, and records the workflow; it does not perform role work as a complete substitute for subagents.
+- Complete execution claims require `subagent_execution_status.json` plus `agent_invocation_manifest.json` entries with concrete runtime handoff/spawn evidence for each critical role.
+- Declared-only role names, synthetic fixture manifests, host-only fallback, or structural report success are not execution proof.
+- Any host participation in critical implementation, review, verification, board execution, failure analysis, integration, final validation, or writeback assessment must be disclosed in `critical_host_participation`; independence-affecting participation prevents a complete subagent-first claim.
 - `workflow-orchestrator` owns plan, state, route, route history, and closure request.
 - `knowledge-planner` owns investigation planning, implementation planning, and prompt-derived board target drafting.
 - `repo-implementer` owns repo changes and local verification evidence.

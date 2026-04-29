@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "subagent_execution_status",
   "type": "object",
-  "required": ["session_id", "producer_agent", "subpower_invoked", "subagent_execution_required", "subagent_execution_mode", "spawned_roles", "not_spawned_roles", "fallback_used", "fallback_reason", "degraded", "degradation_reason", "independence_guarantee"],
+  "required": ["session_id", "producer_agent", "subpower_invoked", "subagent_execution_required", "subagent_execution_mode", "spawned_roles", "not_spawned_roles", "fallback_used", "fallback_reason", "degraded", "degradation_reason", "execution_evidence_status", "critical_host_participation", "independence_guarantee"],
   "additionalProperties": false,
   "properties": {
     "session_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"},
@@ -16,6 +16,21 @@
     "fallback_reason": {"type": ["string", "null"]},
     "degraded": {"type": "boolean"},
     "degradation_reason": {"type": ["string", "null"]},
+    "execution_evidence_status": {"enum": ["complete", "degraded", "synthetic_fixture", "declared_only", "insufficient"]},
+    "critical_host_participation": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["role_id", "scope", "disclosed", "affects_independence"],
+        "additionalProperties": false,
+        "properties": {
+          "role_id": {"type": "string", "minLength": 1},
+          "scope": {"type": "string", "minLength": 1},
+          "disclosed": {"type": "boolean"},
+          "affects_independence": {"type": "boolean"}
+        }
+      }
+    },
     "independence_guarantee": {
       "type": "object",
       "required": ["implementation_review_separated", "verification_separated_from_implementation", "writeback_assessment_separated"],

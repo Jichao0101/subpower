@@ -26,8 +26,18 @@ function writeBaseImplementationRun(runDir) {
     session_id: 's1',
     producer_agent: 'workflow-1',
     invocations: [
-      { invocation_id: 'impl-1', agent_id: 'agent-a', role_id: 'repo-implementer' },
-      { invocation_id: 'review-1', agent_id: 'agent-b', role_id: 'repo-reviewer' }
+      {
+        invocation_id: 'impl-1',
+        agent_id: 'agent-a',
+        role_id: 'repo-implementer',
+        execution_evidence: { evidence_type: 'runtime_spawn', evidence_ref: 'handoff:impl-1' }
+      },
+      {
+        invocation_id: 'review-1',
+        agent_id: 'agent-b',
+        role_id: 'repo-reviewer',
+        execution_evidence: { evidence_type: 'runtime_spawn', evidence_ref: 'handoff:review-1' }
+      }
     ]
   });
   writeArtifact(runDir, 'implementation_plan', {

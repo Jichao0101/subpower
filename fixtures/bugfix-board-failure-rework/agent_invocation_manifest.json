@@ -2,11 +2,59 @@
   "session_id": "fixture-board-failure-rework",
   "producer_agent": "workflow-orchestrator",
   "invocations": [
-    {"invocation_id": "planner-1", "agent_id": "agent-planner", "role_id": "knowledge-planner"},
-    {"invocation_id": "impl-1", "agent_id": "agent-implementer", "role_id": "repo-implementer"},
-    {"invocation_id": "review-1", "agent_id": "agent-reviewer", "role_id": "repo-reviewer"},
-    {"invocation_id": "verification-manager", "agent_id": "agent-verification", "role_id": "verification-manager"},
-    {"invocation_id": "board-1", "agent_id": "agent-board", "role_id": "board-runner"},
-    {"invocation_id": "workflow-orchestrator", "agent_id": "agent-orchestrator", "role_id": "workflow-orchestrator"}
+    {
+      "invocation_id": "planner-1",
+      "agent_id": "agent-planner",
+      "role_id": "knowledge-planner",
+      "execution_evidence": {
+        "evidence_type": "synthetic_fixture",
+        "evidence_ref": "fixture:bugfix-board-failure-rework/planner-1"
+      }
+    },
+    {
+      "invocation_id": "impl-1",
+      "agent_id": "agent-implementer",
+      "role_id": "repo-implementer",
+      "execution_evidence": {
+        "evidence_type": "synthetic_fixture",
+        "evidence_ref": "fixture:bugfix-board-failure-rework/impl-1"
+      }
+    },
+    {
+      "invocation_id": "review-1",
+      "agent_id": "agent-reviewer",
+      "role_id": "repo-reviewer",
+      "execution_evidence": {
+        "evidence_type": "synthetic_fixture",
+        "evidence_ref": "fixture:bugfix-board-failure-rework/review-1"
+      }
+    },
+    {
+      "invocation_id": "verification-manager",
+      "agent_id": "agent-verification",
+      "role_id": "verification-manager",
+      "execution_evidence": {
+        "evidence_type": "synthetic_fixture",
+        "evidence_ref": "fixture:bugfix-board-failure-rework/verification-manager"
+      }
+    },
+    {
+      "invocation_id": "board-1",
+      "agent_id": "agent-board",
+      "role_id": "board-runner",
+      "execution_evidence": {
+        "evidence_type": "synthetic_fixture",
+        "evidence_ref": "fixture:bugfix-board-failure-rework/board-1"
+      }
+    },
+    {
+      "invocation_id": "workflow-orchestrator",
+      "agent_id": "agent-orchestrator",
+      "role_id": "workflow-orchestrator",
+      "execution_evidence": {
+        "evidence_type": "synthetic_fixture",
+        "evidence_ref": "fixture:bugfix-board-failure-rework/workflow-orchestrator"
+      }
+    }
   ]
 }

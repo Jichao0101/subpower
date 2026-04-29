@@ -2,12 +2,68 @@
   "session_id": "full-flow-board-log-rework-closure",
   "producer_agent": "workflow-orchestrator",
   "invocations": [
-    {"invocation_id": "knowledge-planner", "agent_id": "agent-planner", "role_id": "knowledge-planner"},
-    {"invocation_id": "repo-implementer", "agent_id": "agent-implementer", "role_id": "repo-implementer"},
-    {"invocation_id": "repo-reviewer", "agent_id": "agent-reviewer", "role_id": "repo-reviewer"},
-    {"invocation_id": "verification-manager", "agent_id": "agent-verification", "role_id": "verification-manager"},
-    {"invocation_id": "board-runner", "agent_id": "agent-board", "role_id": "board-runner"},
-    {"invocation_id": "failure-analyst", "agent_id": "agent-failure", "role_id": "failure-analyst"},
-    {"invocation_id": "workflow-orchestrator", "agent_id": "agent-orchestrator", "role_id": "workflow-orchestrator"}
+    {
+      "invocation_id": "knowledge-planner",
+      "agent_id": "agent-planner",
+      "role_id": "knowledge-planner",
+      "execution_evidence": {
+        "evidence_type": "synthetic_fixture",
+        "evidence_ref": "fixture:full-flow-board-log-rework-closure/knowledge-planner"
+      }
+    },
+    {
+      "invocation_id": "repo-implementer",
+      "agent_id": "agent-implementer",
+      "role_id": "repo-implementer",
+      "execution_evidence": {
+        "evidence_type": "synthetic_fixture",
+        "evidence_ref": "fixture:full-flow-board-log-rework-closure/repo-implementer"
+      }
+    },
+    {
+      "invocation_id": "repo-reviewer",
+      "agent_id": "agent-reviewer",
+      "role_id": "repo-reviewer",
+      "execution_evidence": {
+        "evidence_type": "synthetic_fixture",
+        "evidence_ref": "fixture:full-flow-board-log-rework-closure/repo-reviewer"
+      }
+    },
+    {
+      "invocation_id": "verification-manager",
+      "agent_id": "agent-verification",
+      "role_id": "verification-manager",
+      "execution_evidence": {
+        "evidence_type": "synthetic_fixture",
+        "evidence_ref": "fixture:full-flow-board-log-rework-closure/verification-manager"
+      }
+    },
+    {
+      "invocation_id": "board-runner",
+      "agent_id": "agent-board",
+      "role_id": "board-runner",
+      "execution_evidence": {
+        "evidence_type": "synthetic_fixture",
+        "evidence_ref": "fixture:full-flow-board-log-rework-closure/board-runner"
+      }
+    },
+    {
+      "invocation_id": "failure-analyst",
+      "agent_id": "agent-failure",
+      "role_id": "failure-analyst",
+      "execution_evidence": {
+        "evidence_type": "synthetic_fixture",
+        "evidence_ref": "fixture:full-flow-board-log-rework-closure/failure-analyst"
+      }
+    },
+    {
+      "invocation_id": "workflow-orchestrator",
+      "agent_id": "agent-orchestrator",
+      "role_id": "workflow-orchestrator",
+      "execution_evidence": {
+        "evidence_type": "synthetic_fixture",
+        "evidence_ref": "fixture:full-flow-board-log-rework-closure/workflow-orchestrator"
+      }
+    }
   ]
 }

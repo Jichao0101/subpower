@@ -17,6 +17,8 @@ function subagentStatus(overrides = {}) {
     fallback_reason: null,
     degraded: false,
     degradation_reason: null,
+    execution_evidence_status: 'complete',
+    critical_host_participation: [],
     independence_guarantee: {
       implementation_review_separated: true,
       verification_separated_from_implementation: true,
@@ -31,11 +33,11 @@ function invocationManifest() {
     session_id: 's1',
     producer_agent: 'workflow-orchestrator',
     invocations: [
-      { invocation_id: 'impl-1', agent_id: 'agent-impl', role_id: 'repo-implementer' },
-      { invocation_id: 'review-1', agent_id: 'agent-review', role_id: 'repo-reviewer' },
-      { invocation_id: 'verify-1', agent_id: 'agent-verify', role_id: 'verification-manager' },
-      { invocation_id: 'board-1', agent_id: 'agent-board', role_id: 'board-runner' },
-      { invocation_id: 'closer-1', agent_id: 'agent-closer', role_id: 'knowledge-closer' }
+      { invocation_id: 'impl-1', agent_id: 'agent-impl', role_id: 'repo-implementer', execution_evidence: { evidence_type: 'runtime_spawn', evidence_ref: 'handoff:impl-1' } },
+      { invocation_id: 'review-1', agent_id: 'agent-review', role_id: 'repo-reviewer', execution_evidence: { evidence_type: 'runtime_spawn', evidence_ref: 'handoff:review-1' } },
+      { invocation_id: 'verify-1', agent_id: 'agent-verify', role_id: 'verification-manager', execution_evidence: { evidence_type: 'runtime_spawn', evidence_ref: 'handoff:verify-1' } },
+      { invocation_id: 'board-1', agent_id: 'agent-board', role_id: 'board-runner', execution_evidence: { evidence_type: 'runtime_spawn', evidence_ref: 'handoff:board-1' } },
+      { invocation_id: 'closer-1', agent_id: 'agent-closer', role_id: 'knowledge-closer', execution_evidence: { evidence_type: 'runtime_spawn', evidence_ref: 'handoff:closer-1' } }
     ]
   };
 }
@@ -163,6 +165,7 @@ function writebackReceipt() {
     fallback_reason: 'Runtime did not expose subagent spawning.',
     degraded: true,
     degradation_reason: 'Host-only fallback cannot prove role separation.',
+    execution_evidence_status: 'degraded',
     independence_guarantee: {
       implementation_review_separated: false,
       verification_separated_from_implementation: false,
@@ -176,7 +179,7 @@ function writebackReceipt() {
     complete_subpower_execution: true,
     blockers: []
   }));
-  expectBlocked(gateClosure(run), 'host_only_fallback_cannot_claim_complete_subpower_execution');
+  expectBlocked(gateClosure(run), 'complete_claim_requires_spawned_subagents');
 }
 
 {
@@ -189,6 +192,7 @@ function writebackReceipt() {
     fallback_reason: 'Runtime did not expose subagent spawning.',
     degraded: true,
     degradation_reason: 'Host-only fallback cannot prove role separation.',
+    execution_evidence_status: 'degraded',
     independence_guarantee: {
       implementation_review_separated: false,
       verification_separated_from_implementation: false,
@@ -236,6 +240,117 @@ function writebackReceipt() {
     producer_agent: 'impl-1'
   });
   expectBlocked(validateSubagentExecutionStatus(run), 'artifact_produced_by_wrong_role');
+}
+
+{
+  const run = tempRunDir('subpower-declared-only-complete-claim');
+  writeArtifact(run, 'subagent_execution_status', subagentStatus({
+    execution_evidence_status: 'declared_only'
+  }));
+  const manifest = invocationManifest();
+  manifest.invocations = manifest.invocations.map((invocation) => ({
+    ...invocation,
+    execution_evidence: { evidence_type: 'declared_only', evidence_ref: null }
+  }));
+  writeArtifact(run, 'agent_invocation_manifest', manifest);
+  writeArtifact(run, 'code_change_manifest', codeChangeManifest());
+  writeArtifact(run, 'review_decision', reviewDecision());
+  writeArtifact(run, 'board_validation_result', boardValidationResult());
+  writeArtifact(run, 'evidence_manifest', evidenceManifest());
+  writeArtifact(run, 'closure_matrix', closureMatrix({
+    completed_as_subagent_first_execution: true,
+    complete_subpower_execution: true,
+    independence_evidence_status: 'complete'
+  }));
+  expectBlocked(validateSubagentExecutionStatus(run), 'complete_claim_requires_complete_execution_evidence');
+}
+
+{
+  const run = tempRunDir('subpower-same-host-impl-review-complete-claim');
+  writeArtifact(run, 'subagent_execution_status', subagentStatus());
+  const manifest = invocationManifest();
+  manifest.invocations = manifest.invocations.map((invocation) => (
+    ['impl-1', 'review-1'].includes(invocation.invocation_id)
+      ? { ...invocation, agent_id: 'host-agent' }
+      : invocation
+  ));
+  writeArtifact(run, 'agent_invocation_manifest', manifest);
+  writeArtifact(run, 'code_change_manifest', codeChangeManifest());
+  writeArtifact(run, 'review_decision', reviewDecision());
+  writeArtifact(run, 'evidence_manifest', evidenceManifest());
+  writeArtifact(run, 'closure_matrix', closureMatrix({
+    completed_as_subagent_first_execution: true,
+    complete_subpower_execution: true,
+    independence_evidence_status: 'complete'
+  }));
+  expectBlocked(validateSubagentExecutionStatus(run), 'implementation_review_actor_not_separated');
+}
+
+{
+  const run = tempRunDir('subpower-nonconcrete-producer-complete-claim');
+  writeArtifact(run, 'subagent_execution_status', subagentStatus());
+  const manifest = invocationManifest();
+  manifest.invocations.unshift({
+    invocation_id: 'impl-manual',
+    agent_id: 'manual-implementer',
+    role_id: 'repo-implementer',
+    execution_evidence: { evidence_type: 'manual_external', evidence_ref: 'manual:impl' }
+  });
+  writeArtifact(run, 'agent_invocation_manifest', manifest);
+  writeArtifact(run, 'code_change_manifest', {
+    ...codeChangeManifest(),
+    producer_agent: 'impl-manual'
+  });
+  writeArtifact(run, 'review_decision', reviewDecision());
+  writeArtifact(run, 'evidence_manifest', evidenceManifest());
+  writeArtifact(run, 'closure_matrix', closureMatrix({
+    completed_as_subagent_first_execution: true,
+    complete_subpower_execution: true,
+    independence_evidence_status: 'complete'
+  }));
+  expectBlocked(validateSubagentExecutionStatus(run), 'complete_claim_requires_concrete_artifact_producer_evidence');
+}
+
+{
+  const run = tempRunDir('subpower-undisclosed-host-critical-participation');
+  writeArtifact(run, 'subagent_execution_status', subagentStatus({
+    critical_host_participation: [
+      {
+        role_id: 'repo-implementer',
+        scope: 'host edited production files',
+        disclosed: false,
+        affects_independence: true
+      }
+    ]
+  }));
+  writeArtifact(run, 'agent_invocation_manifest', invocationManifest());
+  writeArtifact(run, 'code_change_manifest', codeChangeManifest());
+  writeArtifact(run, 'review_decision', reviewDecision());
+  expectBlocked(validateSubagentExecutionStatus(run), 'host_critical_participation_must_be_disclosed');
+}
+
+{
+  const run = tempRunDir('subpower-disclosed-host-critical-participation-complete-claim');
+  writeArtifact(run, 'subagent_execution_status', subagentStatus({
+    critical_host_participation: [
+      {
+        role_id: 'repo-implementer',
+        scope: 'host edited production files',
+        disclosed: true,
+        affects_independence: true
+      }
+    ]
+  }));
+  writeArtifact(run, 'agent_invocation_manifest', invocationManifest());
+  writeArtifact(run, 'code_change_manifest', codeChangeManifest());
+  writeArtifact(run, 'review_decision', reviewDecision());
+  writeArtifact(run, 'evidence_manifest', evidenceManifest());
+  writeArtifact(run, 'closure_matrix', closureMatrix({
+    completed_as_subagent_first_execution: true,
+    complete_subpower_execution: true,
+    independence_evidence_status: 'complete'
+  }));
+  expectBlocked(validateSubagentExecutionStatus(run), 'host_critical_participation_blocks_complete_claim');
 }
 
 assert.strictEqual(typeof validateSubagentExecutionStatus, 'function');

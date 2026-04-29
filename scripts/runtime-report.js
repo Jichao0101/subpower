@@ -169,6 +169,31 @@ function routeRounds(runDir) {
   }));
 }
 
+function executionClaim(runDir, gates) {
+  const closure = readOptional(runDir, 'closure_matrix');
+  const status = readOptional(runDir, 'subagent_execution_status');
+  const completeClaimed = Boolean(closure && (
+    closure.completed_as_subagent_first_execution === true
+    || closure.completed_by_subpower === true
+    || closure.complete_subpower_execution === true
+  ));
+  if (!completeClaimed) {
+    return {
+      complete_subpower_execution_claimed: false,
+      complete_subpower_execution_allowed: false,
+      status: status ? status.execution_evidence_status : 'missing',
+      reason: 'no_complete_execution_claim',
+    };
+  }
+  const allowed = gates.subagents.gate_result === 'ready' && gates.closure.gate_result === 'ready';
+  return {
+    complete_subpower_execution_claimed: true,
+    complete_subpower_execution_allowed: allowed,
+    status: status ? status.execution_evidence_status : 'missing',
+    reason: allowed ? 'complete_claim_supported_by_role_execution_evidence' : gates.subagents.reason,
+  };
+}
+
 function buildRuntimeReport(runDir) {
   const gates = {
     board: safeGate(gateBoardExecution, runDir),
@@ -200,6 +225,7 @@ function buildRuntimeReport(runDir) {
     artifacts: artifactStatus(runDir, EXPECTED),
     artifact_names: listArtifacts(runDir),
     gates,
+    execution_claim: executionClaim(runDir, gates),
     blocked,
     ready,
     side_state: sideState,
