@@ -9,13 +9,15 @@ subpower is a subagent-first orchestration runtime for three-side workflows acro
 
 subpower governs subagent handoff, side-state synchronization, independent review, board evidence, decision points, and route legality.
 
+An explicit user instruction such as `use subpower` or `按 subpower 处理` authorizes subagent-first orchestration. The host agent is orchestration-only: it composes the workflow, delegates to role-specific subagents, and records routes. Host-only fallback is degraded/non-complete and must be labeled that way.
+
 Full-flow agent entry:
 
 ```text
 skills/using-subpower/SKILL.md
 ```
 
-There is no `subpower run` command. Scripts provide validation, reports, gates, installation staging, and demos only.
+There is no `subpower run` command. Scripts provide validation, reports, gates, installation staging, and demos only. Structural script success is not workflow completion.
 
 The runtime model is:
 
@@ -40,7 +42,7 @@ Workflows are reusable patterns, not rigid end-to-end scripts.
 - `contracts/`: active orchestration truth source.
 - `schemas/`: contract and run artifact schemas.
 - `scripts/`: validation, gates, staging, demo, and tests.
-- `fixtures/`: runnable demo artifacts and regression fixtures.
+- `fixtures/`: structural demo artifacts and regression fixtures. Synthetic fixture pass/fail artifacts are degraded examples unless backed by real execution evidence.
 - `docs/`: architecture, installation, demo, and operational notes.
 
 ## Install
@@ -67,7 +69,7 @@ node scripts/subpower.js demo bugfix-board-failure-rework --to .subpower/run/dem
 node scripts/subpower.js report .subpower/run/demo-bugfix-board-failure
 ```
 
-The CLI intentionally has no `run` subcommand. Full business workflow execution is started by the `using-subpower` skill, then composed by the host agent and role-specific subagents.
+The CLI intentionally has no `run` subcommand. Full business workflow execution is started by the `using-subpower` skill, then composed by the host agent through role-specific subagents. A host-only reconstruction may document structure, but it is not a complete subpower run.
 
 ## Validation
 
@@ -85,6 +87,7 @@ node scripts/test-demo.js
 node scripts/test-run-artifact-lifecycle.js
 node scripts/test-schema-diagnostics.js
 node scripts/test-runtime-report.js
+node scripts/test-subagent-execution.js
 node scripts/test-no-external-runtime-dependency.js
 node scripts/test-no-cutepower-dependency.js
 node scripts/test-contract-schema-consistency.js

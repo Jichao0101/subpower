@@ -24,6 +24,8 @@ function validateFixture(file, artifactName) {
 const fixtureSchemas = {
   'task_profile.json': 'task_profile',
   'workflow_plan.json': 'workflow_plan',
+  'subagent_execution_status.json': 'subagent_execution_status',
+  'agent_invocation_manifest.json': 'agent_invocation_manifest',
   'side_state.initial.json': 'side_state',
   'implementation_plan.json': 'implementation_plan',
   'code_change_manifest.json': 'code_change_manifest',
@@ -50,6 +52,8 @@ function runDir(name) {
 }
 
 function writeCommon(run) {
+  writeArtifact(run, 'subagent_execution_status', read('subagent_execution_status.json'));
+  writeArtifact(run, 'agent_invocation_manifest', read('agent_invocation_manifest.json'));
   writeArtifact(run, 'board_validation_result', read('board_validation_result.failed.json'));
   writeArtifact(run, 'evidence_manifest', read('evidence_manifest.json'));
 }

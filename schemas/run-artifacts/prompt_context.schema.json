@@ -7,6 +7,8 @@
   "properties": {
     "session_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"},
     "producer_agent": {"type": "string", "minLength": 1},
+    "subpower_invoked": {"type": "boolean"},
+    "subpower_invocation_phrase": {"type": "string"},
     "observed_symptom": {"type": "string"},
     "expected_behavior": {"type": "string"},
     "validation_criteria": {"type": "array", "items": {"type": "string", "minLength": 1}},

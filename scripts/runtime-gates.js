@@ -83,24 +83,7 @@ function requireArtifacts(runDir, artifactNames, gate = 'artifact_gate') {
 
 function gateBoardExecution(runDir) {
   if (!hasArtifact(runDir, 'board_target')) {
-    if (!hasArtifact(runDir, 'prompt_context')) {
-      return verdict('board_target_gate', false, 'missing_required_artifacts', { missing: ['board_target'] });
-    }
-    const promptShape = validateArtifactShape(runDir, 'prompt_context');
-    if (promptShape.gate_result !== 'ready') {
-      return promptShape;
-    }
-    const prompt = readArtifact(runDir, 'prompt_context');
-    const boardContext = prompt.board_context || {};
-    const hasTargetMaterial = Boolean(boardContext.target_id)
-      || (Array.isArray(boardContext.log_paths) && boardContext.log_paths.length > 0)
-      || (Array.isArray(boardContext.collect_paths) && boardContext.collect_paths.length > 0);
-    const hasExpectedMaterial = Boolean(prompt.expected_behavior)
-      || (Array.isArray(prompt.validation_criteria) && prompt.validation_criteria.length > 0);
-    if (boardContext.provided !== true || !hasTargetMaterial || !hasExpectedMaterial) {
-      return verdict('board_target_gate', false, 'missing_board_target_context');
-    }
-    return verdict('board_target_gate', true, 'prompt_board_context_ready');
+    return verdict('board_target_gate', false, 'missing_required_artifacts', { missing: ['board_target'] });
   }
   const shape = validateArtifactShape(runDir, 'board_target');
   if (shape.gate_result !== 'ready') {
@@ -125,6 +108,147 @@ function findInvocation(manifest, producerAgent) {
   return (manifest.invocations || []).find((invocation) => (
     invocation.invocation_id === producerAgent || invocation.agent_id === producerAgent
   ));
+}
+
+function producerRole(runDir, producerAgent) {
+  if (!hasArtifact(runDir, 'agent_invocation_manifest')) return null;
+  const manifest = readArtifact(runDir, 'agent_invocation_manifest');
+  const invocation = findInvocation(manifest, producerAgent);
+  return invocation ? invocation.role_id : null;
+}
+
+function indicatesSubpowerInvocation(value) {
+  if (!value || typeof value !== 'object') return false;
+  if (value.subpower_invoked === true) return true;
+  if (value.execution_mode === 'subpower') return true;
+  const phrase = String(value.subpower_invocation_phrase || '').toLowerCase();
+  if (phrase.includes('subpower')) return true;
+  return Array.isArray(value.task_modifiers) && value.task_modifiers.some((item) => String(item).toLowerCase().includes('subpower'));
+}
+
+function runIndicatesSubpower(runDir) {
+  if (hasArtifact(runDir, 'subagent_execution_status')) {
+    const status = readArtifact(runDir, 'subagent_execution_status');
+    return status.subpower_invoked === true;
+  }
+  return ['prompt_context', 'task_profile', 'workflow_plan'].some((artifact) => {
+    if (!hasArtifact(runDir, artifact)) return false;
+    return indicatesSubpowerInvocation(readArtifact(runDir, artifact));
+  });
+}
+
+function hasCompleteSubpowerClaim(value) {
+  if (!value || typeof value !== 'object') return false;
+  return value.completed_as_subagent_first_execution === true
+    || value.completed_by_subpower === true
+    || value.complete_subpower_execution === true;
+}
+
+function requireProducerRole(runDir, artifactName, allowedRoles) {
+  if (!hasArtifact(runDir, artifactName)) return null;
+  const artifact = readArtifact(runDir, artifactName);
+  const role = producerRole(runDir, artifact.producer_agent);
+  if (!role) {
+    return verdict('subagent_execution_gate', false, 'insufficient_independence_evidence', { artifact: artifactName });
+  }
+  if (!allowedRoles.includes(role)) {
+    return verdict('subagent_execution_gate', false, 'artifact_produced_by_wrong_role', {
+      artifact: artifactName,
+      role,
+      allowed_roles: allowedRoles,
+    });
+  }
+  return null;
+}
+
+function validateSubagentExecutionStatus(runDir) {
+  if (runIndicatesSubpower(runDir) && !hasArtifact(runDir, 'subagent_execution_status')) {
+    return verdict('subagent_execution_gate', false, 'missing_subagent_execution_status', {
+      missing: ['subagent_execution_status'],
+    });
+  }
+  if (!hasArtifact(runDir, 'subagent_execution_status')) {
+    return verdict('subagent_execution_gate', true, 'subagent_execution_not_required');
+  }
+  const shape = validateArtifactShape(runDir, 'subagent_execution_status');
+  if (shape.gate_result !== 'ready') return shape;
+
+  const status = readArtifact(runDir, 'subagent_execution_status');
+  const guarantee = status.independence_guarantee || {};
+  if (status.subpower_invoked === true && status.subagent_execution_required !== true) {
+    return verdict('subagent_execution_gate', false, 'subpower_invocation_requires_subagents');
+  }
+  if (status.subpower_invoked === true && status.subagent_execution_mode === 'not_required') {
+    return verdict('subagent_execution_gate', false, 'subpower_invocation_cannot_be_not_required');
+  }
+  if (status.subagent_execution_mode === 'spawned_subagents' && status.degraded !== false) {
+    return verdict('subagent_execution_gate', false, 'spawned_subagents_must_not_be_degraded');
+  }
+  if (status.subagent_execution_mode === 'host_only_fallback') {
+    if (status.fallback_used !== true || status.degraded !== true) {
+      return verdict('subagent_execution_gate', false, 'host_only_fallback_must_be_degraded');
+    }
+    if (!status.fallback_reason || !status.degradation_reason) {
+      return verdict('subagent_execution_gate', false, 'host_only_fallback_requires_reasons');
+    }
+    if (
+      guarantee.implementation_review_separated === true
+      && guarantee.verification_separated_from_implementation === true
+      && guarantee.writeback_assessment_separated === true
+    ) {
+      return verdict('subagent_execution_gate', false, 'host_only_fallback_cannot_claim_complete_independence');
+    }
+    if (hasArtifact(runDir, 'closure_matrix') && hasCompleteSubpowerClaim(readArtifact(runDir, 'closure_matrix'))) {
+      return verdict('subagent_execution_gate', false, 'host_only_fallback_cannot_claim_complete_subpower_execution');
+    }
+    if (hasArtifact(runDir, 'closure_matrix')) {
+      const closure = readArtifact(runDir, 'closure_matrix');
+      if (
+        closure.completed_under_subpower_contracts_with_host_only_fallback !== true
+        || closure.degraded !== true
+      ) {
+        return verdict('subagent_execution_gate', false, 'host_only_fallback_requires_degraded_closure_claim');
+      }
+    }
+  }
+  if (status.subagent_execution_mode === 'not_required' && status.subpower_invoked === true) {
+    return verdict('subagent_execution_gate', false, 'not_required_only_for_non_subpower');
+  }
+  if (status.subagent_execution_mode === 'spawned_subagents') {
+    const requiredRoles = ['repo-implementer', 'repo-reviewer', 'verification-manager'];
+    const missingRoles = requiredRoles.filter((role) => !status.spawned_roles.includes(role));
+    if (missingRoles.length > 0) {
+      return verdict('subagent_execution_gate', false, 'missing_required_spawned_roles', { missing_roles: missingRoles });
+    }
+    if (
+      guarantee.implementation_review_separated !== true
+      || guarantee.verification_separated_from_implementation !== true
+      || guarantee.writeback_assessment_separated !== true
+    ) {
+      return verdict('subagent_execution_gate', false, 'spawned_subagents_requires_complete_independence_guarantee');
+    }
+    if (!hasArtifact(runDir, 'agent_invocation_manifest')) {
+      return verdict('subagent_execution_gate', false, 'missing_agent_invocation_manifest');
+    }
+    for (const [artifact, roles] of [
+      ['code_change_manifest', ['repo-implementer']],
+      ['review_decision', ['repo-reviewer']],
+      ['board_validation_result', ['board-runner']],
+      ['board_failure_review', ['repo-reviewer', 'failure-analyst']],
+      ['knowledge_writeback_candidate', ['knowledge-closer']],
+    ]) {
+      const roleVerdict = requireProducerRole(runDir, artifact, roles);
+      if (roleVerdict) return roleVerdict;
+    }
+    if (hasArtifact(runDir, 'code_change_manifest') && hasArtifact(runDir, 'review_decision')) {
+      const changes = readArtifact(runDir, 'code_change_manifest');
+      const review = readArtifact(runDir, 'review_decision');
+      if (changes.producer_agent === review.producer_agent) {
+        return verdict('subagent_execution_gate', false, 'implementation_review_actor_not_separated');
+      }
+    }
+  }
+  return verdict('subagent_execution_gate', true, 'subagent_execution_ready');
 }
 
 function gateReviewIndependence(runDir) {
@@ -185,6 +309,13 @@ function gateRoute(runDir) {
       return assessmentShape;
     }
     const assessment = readArtifact(runDir, 'board_failure_review');
+    const assessmentRole = producerRole(runDir, assessment.producer_agent);
+    if (assessmentRole && !['repo-reviewer', 'failure-analyst'].includes(assessmentRole)) {
+      return verdict('route_gate', false, 'board_failure_review_produced_by_wrong_role', {
+        role: assessmentRole,
+        allowed_roles: ['repo-reviewer', 'failure-analyst'],
+      });
+    }
     if (assessment.recommended_route && assessment.recommended_next && assessment.recommended_route !== assessment.recommended_next) {
       return verdict('route_gate', false, 'board_failure_recommendation_mismatch');
     }
@@ -281,6 +412,10 @@ function containsForbiddenKnowledgePath(value) {
 }
 
 function gateClosure(runDir) {
+  const subagentGate = validateSubagentExecutionStatus(runDir);
+  if (subagentGate.gate_result !== 'ready') {
+    return verdict('closure_gate', false, subagentGate.reason, subagentGate);
+  }
   const required = requireArtifacts(runDir, ['evidence_manifest', 'closure_matrix'], 'closure_gate');
   if (required.gate_result !== 'ready') {
     return required;
@@ -294,6 +429,15 @@ function gateClosure(runDir) {
     return evidenceGate;
   }
   const closure = readArtifact(runDir, 'closure_matrix');
+  if (hasArtifact(runDir, 'code_change_manifest') && !hasArtifact(runDir, 'review_decision')) {
+    return verdict('closure_gate', false, 'closure_requires_review_decision_for_repo_changes');
+  }
+  if (hasArtifact(runDir, 'code_change_manifest') && hasArtifact(runDir, 'review_decision') && hasArtifact(runDir, 'agent_invocation_manifest')) {
+    const independence = gateReviewIndependence(runDir);
+    if (independence.gate_result !== 'ready') {
+      return verdict('closure_gate', false, independence.reason, independence);
+    }
+  }
   const missing = (closure.required_artifacts || []).filter((name) => !hasArtifact(runDir, name));
   if (missing.length > 0) {
     return verdict('closure_gate', false, 'closure_required_artifacts_missing', { missing });
@@ -323,6 +467,10 @@ function gateClosure(runDir) {
 }
 
 function gateWriteback(runDir) {
+  const subagentGate = validateSubagentExecutionStatus(runDir);
+  if (subagentGate.gate_result !== 'ready') {
+    return verdict('writeback_gate', false, subagentGate.reason, subagentGate);
+  }
   const required = requireArtifacts(
     runDir,
     ['evidence_manifest', 'review_decision', 'closure_matrix', 'knowledge_writeback_candidate', 'writeback_plan'],
@@ -407,10 +555,11 @@ if (require.main === module) {
     route: () => gateRoute(runDir),
     evidence: () => gateEvidence(runDir),
     closure: () => gateClosure(runDir),
+    subagents: () => validateSubagentExecutionStatus(runDir),
     writeback: () => gateWriteback(runDir),
   };
   if (!commands[command]) {
-    console.error('usage: node scripts/runtime-gates.js board|independence|route|evidence|closure|writeback <runDir>');
+    console.error('usage: node scripts/runtime-gates.js board|independence|route|evidence|closure|subagents|writeback <runDir>');
     process.exit(2);
   }
   const result = commands[command]();
@@ -426,5 +575,6 @@ module.exports = {
   gateReviewIndependence,
   gateRoute,
   gateWriteback,
+  validateSubagentExecutionStatus,
   validateArtifactShape,
 };

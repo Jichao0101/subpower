@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "subagent_execution_status",
+  "type": "object",
+  "required": ["session_id", "producer_agent", "subpower_invoked", "subagent_execution_required", "subagent_execution_mode", "spawned_roles", "not_spawned_roles", "fallback_used", "fallback_reason", "degraded", "degradation_reason", "independence_guarantee"],
+  "additionalProperties": false,
+  "properties": {
+    "session_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"},
+    "producer_agent": {"type": "string", "minLength": 1},
+    "subpower_invoked": {"type": "boolean"},
+    "subagent_execution_required": {"type": "boolean"},
+    "subagent_execution_mode": {"enum": ["spawned_subagents", "host_only_fallback", "not_required"]},
+    "spawned_roles": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "not_spawned_roles": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "fallback_used": {"type": "boolean"},
+    "fallback_reason": {"type": ["string", "null"]},
+    "degraded": {"type": "boolean"},
+    "degradation_reason": {"type": ["string", "null"]},
+    "independence_guarantee": {
+      "type": "object",
+      "required": ["implementation_review_separated", "verification_separated_from_implementation", "writeback_assessment_separated"],
+      "additionalProperties": false,
+      "properties": {
+        "implementation_review_separated": {"type": "boolean"},
+        "verification_separated_from_implementation": {"type": "boolean"},
+        "writeback_assessment_separated": {"type": "boolean"}
+      }
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "session_id": "fixture-board-failure-rework",
+  "producer_agent": "workflow-orchestrator",
+  "subpower_invoked": true,
+  "subagent_execution_required": true,
+  "subagent_execution_mode": "spawned_subagents",
+  "spawned_roles": ["knowledge-planner", "repo-implementer", "repo-reviewer", "verification-manager", "board-runner"],
+  "not_spawned_roles": [],
+  "fallback_used": false,
+  "fallback_reason": null,
+  "degraded": false,
+  "degradation_reason": null,
+  "independence_guarantee": {
+    "implementation_review_separated": true,
+    "verification_separated_from_implementation": true,
+    "writeback_assessment_separated": true
+  }
+}

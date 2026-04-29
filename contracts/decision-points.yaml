@@ -4,7 +4,7 @@
     {
       "decision_point_id": "board_validation_failed",
       "trigger": "board_validation_result.status == failed",
-      "required_assessor": "repo-reviewer",
+      "required_assessor": "repo-reviewer_or_failure-analyst",
       "required_artifacts": ["board_validation_result", "evidence_manifest", "board_failure_review"],
       "decision_owner": "workflow-orchestrator",
       "allowed_routes": ["coder_rework", "planner_rework", "collect_more_evidence", "rerun_board_validation", "escalate_to_user", "close_as_environment_issue"],

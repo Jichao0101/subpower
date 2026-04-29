@@ -14,6 +14,12 @@
     "board_state": {"enum": ["not_required", "target_pending", "target_bound", "executed", "evidence_collected", "failed", "passed", "blocked"]},
     "knowledge_state": {"enum": ["context_pending", "context_ready", "writeback_pending", "writeback_done", "synced", "blocked"]},
     "required_artifacts": {"type": "array", "items": {"type": "string"}},
+    "completed_as_subagent_first_execution": {"type": "boolean"},
+    "completed_by_subpower": {"type": "boolean"},
+    "complete_subpower_execution": {"type": "boolean"},
+    "completed_under_subpower_contracts_with_host_only_fallback": {"type": "boolean"},
+    "degraded": {"type": "boolean"},
+    "independence_evidence_status": {"enum": ["complete", "degraded", "insufficient_independence_evidence", "not_required"]},
     "blockers": {"type": "array", "items": {"type": "string", "minLength": 1}}
   }
 }

@@ -1,0 +1,12 @@
+{
+  "session_id": "fixture-board-failure-rework",
+  "producer_agent": "workflow-orchestrator",
+  "invocations": [
+    {"invocation_id": "planner-1", "agent_id": "agent-planner", "role_id": "knowledge-planner"},
+    {"invocation_id": "impl-1", "agent_id": "agent-implementer", "role_id": "repo-implementer"},
+    {"invocation_id": "review-1", "agent_id": "agent-reviewer", "role_id": "repo-reviewer"},
+    {"invocation_id": "verification-manager", "agent_id": "agent-verification", "role_id": "verification-manager"},
+    {"invocation_id": "board-1", "agent_id": "agent-board", "role_id": "board-runner"},
+    {"invocation_id": "workflow-orchestrator", "agent_id": "agent-orchestrator", "role_id": "workflow-orchestrator"}
+  ]
+}

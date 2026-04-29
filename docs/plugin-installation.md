@@ -4,7 +4,9 @@ This repository is the development source for subpower. `.codex-plugin/plugin.js
 
 `scripts/install-plugin.js` is a local staging utility. It copies plugin files into a target directory for testing; it is not a formal marketplace publication process.
 
-After staging, the full-flow entry is `skills/using-subpower/SKILL.md`. There is no `subpower run` command; scripts provide validation, reports, gates, installation staging, and demos only.
+After staging, the full-flow entry is `skills/using-subpower/SKILL.md`. An explicit instruction such as `use subpower` or `按 subpower 处理` authorizes subagent-first orchestration. The host remains orchestration-only, and host-only fallback is degraded/non-complete.
+
+There is no `subpower run` command; scripts provide validation, reports, gates, installation staging, and demos only. Passing structural commands does not complete a business workflow.
 
 Core commands match [../INSTALL.md](../INSTALL.md):
 

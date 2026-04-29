@@ -18,6 +18,7 @@ const tests = [
   'scripts/test-schema-diagnostics.js',
   'scripts/test-runtime-report.js',
   'scripts/test-knowledge-writeback.js',
+  'scripts/test-subagent-execution.js',
   'scripts/test-no-external-runtime-dependency.js',
   'scripts/test-no-cutepower-dependency.js',
   'scripts/test-contract-schema-consistency.js',

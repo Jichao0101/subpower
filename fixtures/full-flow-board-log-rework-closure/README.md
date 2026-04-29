@@ -14,4 +14,4 @@ board log symptom
   -> closure allowed
 ```
 
-It is a structural artifact example only. It does not represent real board execution and does not contain real board IPs, user paths, or external project paths.
+It is a structural artifact example only. Its passed/failed board artifacts and closure artifacts are synthetic degraded examples unless paired with real execution evidence. It does not represent real board execution and does not contain real board IPs, user paths, or external project paths.

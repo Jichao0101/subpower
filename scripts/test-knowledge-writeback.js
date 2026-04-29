@@ -26,6 +26,8 @@ function runDir(name) {
 }
 
 function writeBase(run, closureFile = 'closure_matrix.passed.json') {
+  writeArtifact(run, 'subagent_execution_status', read('subagent_execution_status.json'));
+  writeArtifact(run, 'agent_invocation_manifest', read('agent_invocation_manifest.json'));
   writeArtifact(run, 'evidence_manifest', read('evidence_manifest.json'));
   writeArtifact(run, 'review_decision', read('review_decision.json'));
   writeArtifact(run, 'closure_matrix', read(closureFile));

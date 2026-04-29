@@ -4,6 +4,8 @@ subpower is currently a development source for a Codex plugin. Stage it before t
 
 After staging, agents should read `skills/using-subpower/SKILL.md` as the full-flow entry for complex tasks. Installation only makes skills, agents, contracts, schemas, and scripts available; it does not automatically execute real board tasks.
 
+An explicit task instruction such as `use subpower` or `按 subpower 处理` authorizes subagent-first orchestration after staging. The host agent remains orchestration-only and must not present host-only fallback as a complete subpower workflow.
+
 ## Repo Scoped Staging
 
 ```bash
@@ -44,12 +46,13 @@ node scripts/subpower.js test
 node scripts/subpower.js validate
 ```
 
-There is no `subpower run` command. Full business workflow execution is started by the `using-subpower` skill and composed by the host agent.
+There is no `subpower run` command. Full business workflow execution is started by the `using-subpower` skill and composed by the host agent through role-specific subagents. Validation, test, demo, report, and install commands prove structure only; they do not complete a business workflow.
 
 ## Boundaries
 
 - install-plugin.js is a staging utility, not a marketplace publisher.
 - scripts provide structural validation, runtime gates, runtime reports, install staging, and demo fixture support only.
+- synthetic fixture artifacts are structural/degraded examples unless paired with real execution evidence.
 - .codex-plugin/plugin.json is plugin metadata, not proof of installation.
 - .subpower/run/<session_id>/ is runtime state and is not copied into plugin staging targets.
 - External orchestration projects may be used as design references only.

@@ -12,6 +12,7 @@ const {
   gateReviewIndependence,
   gateRoute,
   gateWriteback,
+  validateSubagentExecutionStatus,
 } = require('./runtime-gates');
 
 const ROOT = path.resolve(__dirname, '..');
@@ -46,10 +47,11 @@ function gate(argv) {
     route: gateRoute,
     evidence: gateEvidence,
     closure: gateClosure,
+    subagents: validateSubagentExecutionStatus,
     writeback: gateWriteback,
   };
   if (!gates[gateName] || !runDir) {
-    throw new Error('usage: node scripts/subpower.js gate board|independence|route|evidence|closure|writeback <run-dir>');
+    throw new Error('usage: node scripts/subpower.js gate board|independence|route|evidence|closure|subagents|writeback <run-dir>');
   }
   return gates[gateName](runDir);
 }

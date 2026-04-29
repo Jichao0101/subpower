@@ -7,6 +7,8 @@
   "properties": {
     "session_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"},
     "producer_agent": {"type": "string", "minLength": 1},
+    "subpower_invoked": {"type": "boolean"},
+    "execution_mode": {"enum": ["subpower", "standard"]},
     "workflow_id": {"enum": ["incident_investigation", "bug_fix", "board_validation", "functional_review", "knowledge_writeback"]},
     "planned_steps": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}
   }

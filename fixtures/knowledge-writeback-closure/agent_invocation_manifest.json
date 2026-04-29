@@ -1,0 +1,11 @@
+{
+  "session_id": "knowledge-writeback-closure",
+  "producer_agent": "workflow-orchestrator",
+  "invocations": [
+    {"invocation_id": "repo-implementer", "agent_id": "agent-implementer", "role_id": "repo-implementer"},
+    {"invocation_id": "repo-reviewer", "agent_id": "agent-reviewer", "role_id": "repo-reviewer"},
+    {"invocation_id": "verification-manager", "agent_id": "agent-verification", "role_id": "verification-manager"},
+    {"invocation_id": "knowledge-closer", "agent_id": "agent-closer", "role_id": "knowledge-closer"},
+    {"invocation_id": "workflow-orchestrator", "agent_id": "agent-orchestrator", "role_id": "workflow-orchestrator"}
+  ]
+}

@@ -2,6 +2,10 @@
 
 This fixture demonstrates closure-passed knowledge writeback artifacts.
 
+This is a synthetic structural fixture. Its closure and writeback artifacts are
+degraded examples only unless backed by reviewed closure evidence from a real
+run.
+
 It contains:
 
 - a verified current-knowledge candidate that can end in a staged receipt

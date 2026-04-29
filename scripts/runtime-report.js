@@ -9,6 +9,7 @@ const {
   gateReviewIndependence,
   gateRoute,
   gateWriteback,
+  validateSubagentExecutionStatus,
 } = require('./runtime-gates');
 
 const EXPECTED = [
@@ -16,6 +17,7 @@ const EXPECTED = [
   'task_profile',
   'workflow_plan',
   'workflow_state',
+  'subagent_execution_status',
   'agent_invocation_manifest',
   'side_state',
   'handoff_packet',
@@ -94,7 +96,7 @@ function nextStructuralActions(runDir) {
       actions.push(action(
         'create_board_target',
         'knowledge-planner',
-        'board validation needs board_target or prompt_context.board_context with provided board material'
+        'board validation needs board_target; prompt board context can only support drafting it'
       ));
     }
   }
@@ -174,6 +176,7 @@ function buildRuntimeReport(runDir) {
     route: safeGate(gateRoute, runDir),
     evidence: safeGate(gateEvidence, runDir),
     closure: safeGate(gateClosure, runDir),
+    subagents: safeGate(validateSubagentExecutionStatus, runDir),
     writeback: safeGate(gateWriteback, runDir),
   };
   const ready = [];

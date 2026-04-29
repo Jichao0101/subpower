@@ -29,7 +29,7 @@
       "default_steps": ["bind_board_target", "execute_board_session", "collect_artifacts", "emit_board_validation_result", "if_failed_request_reviewer_assessment"],
       "required_inputs": ["board_target", "code_change_manifest"],
       "required_outputs": ["board_validation_result", "evidence_manifest"],
-      "optional_assessors": ["failure-analyst", "verification-manager"],
+      "optional_assessors": ["repo-reviewer", "failure-analyst", "verification-manager"],
       "decision_points": ["board_validation_failed", "environment_unstable", "evidence_insufficient"],
       "hard_gates": ["board_target_gate", "evidence_gate", "route_gate"],
       "allowed_next_workflows": ["bug_fix", "incident_investigation", "functional_review", "knowledge_writeback"]
@@ -42,7 +42,7 @@
       "required_outputs": ["review_decision", "closure_matrix"],
       "optional_participants": ["verification-manager"],
       "decision_points": ["evidence_insufficient", "requirement_ambiguous", "closure_blocked"],
-      "hard_gates": ["independence_gate", "schema_gate", "closure_gate"],
+      "hard_gates": ["schema_gate", "closure_gate"],
       "allowed_next_workflows": ["bug_fix", "board_validation", "knowledge_writeback"]
     },
     {

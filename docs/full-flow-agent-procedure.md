@@ -2,9 +2,11 @@
 
 ## Overview
 
-The full subpower workflow is executed by the host agent using `skills/using-subpower/SKILL.md` as the entry point. No `subpower run` command is required or allowed for full business execution.
+The full subpower workflow is orchestrated by the host agent using `skills/using-subpower/SKILL.md` as the entry point and role-specific subagents for bounded work. No `subpower run` command is required or allowed for full business execution.
 
-Subpower defines contracts, schemas, gates, reports, install staging, and demo fixtures. It does not automate root-cause judgment, code repair, or real board execution.
+An explicit user instruction such as `use subpower` or `按 subpower 处理` authorizes this subagent-first orchestration. The host is orchestration-only: it composes handoffs, preserves route state, and records decisions. Host-only fallback is degraded/non-complete and must not be represented as a complete subpower workflow.
+
+Subpower defines contracts, schemas, gates, reports, install staging, and demo fixtures. It does not automate root-cause judgment, code repair, real board execution, or workflow completion.
 
 ## Full-flow lifecycle
 
@@ -14,7 +16,7 @@ Subpower defines contracts, schemas, gates, reports, install staging, and demo f
 4. Produce `incident_report.json`, `root_cause_hypotheses.json`, `evidence_manifest.json`, and `next_workflow_recommendation.json`.
 5. If the recommendation points to `bug_fix`, create `implementation_plan.json`, modify code through the implementer role, and produce `code_change_manifest.json`.
 6. Require independent `review_decision.json` before board validation or closure.
-7. If board validation is needed, bind board context into `board_target.json` or use equivalent prompt board context for the structural target gate.
+7. If board validation is needed, bind prompt/project context into `board_target.json` before execution.
 8. Produce `board_session.json`, `board_validation_result.json`, and updated `evidence_manifest.json`.
 9. If board validation failed, produce `board_failure_review.json`, `main_route_decision.json`, and append `route_history.json`.
 10. Continue through the selected route until `closure_matrix.json` can pass closure.
@@ -24,7 +26,7 @@ Subpower defines contracts, schemas, gates, reports, install staging, and demo f
 
 Board target, log paths, validation commands, expected behavior, and project-specific metrics must come from the user prompt, current task context, project-local configuration, or run artifacts.
 
-`prompt_context.json` records that extracted material. `board_target.json` is prompt/context derived and must not contain repository-coded defaults.
+`prompt_context.json` records that extracted material. `board_target.json` is prompt/context derived and must not contain repository-coded defaults. Prompt board context may justify creating `board_target.json`; it does not replace `board_target.json` for real board validation.
 
 ## Artifact sequence
 
@@ -47,6 +49,7 @@ prompt_context
 
 ## Role handoff model
 
+- The host agent composes, routes, and records the workflow; it does not perform role work as a complete substitute for subagents.
 - `workflow-orchestrator` owns plan, state, route, route history, and closure request.
 - `knowledge-planner` owns investigation planning, implementation planning, and prompt-derived board target drafting.
 - `repo-implementer` owns repo changes and local verification evidence.
@@ -86,11 +89,14 @@ Scripts provide structural support:
 - copy demo fixtures
 - run regression tests
 
+Passing these scripts means the structure is valid. It does not mean a workflow is complete.
+
 ## What scripts do not do
 
 Scripts do not:
 
 - execute the full business workflow
+- complete a workflow by passing structural checks
 - decide business root cause
 - choose whether code or plan should be fixed
 - modify repository code as an automatic workflow engine
@@ -123,7 +129,7 @@ closure_matrix.passed
 4. Planner creates a timestamp alignment plan.
 5. Implementer changes the scoped code and records local verification.
 6. Reviewer approves.
-7. Board-runner records a board session; validation fails.
+7. Board-runner uses `board_target.json` and records a board session; validation fails.
 8. Failure assessment classifies the failure as `plan_mismatch`.
 9. Workflow-orchestrator routes to `planner_rework` and appends `route_history.json`.
 10. Planner extends the plan to ego-motion compensation.
