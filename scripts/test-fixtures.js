@@ -62,6 +62,13 @@ function writeCommon(run) {
 }
 
 {
+  const run = runDir('subpower-fixture-failed-board-no-route-decision');
+  writeCommon(run);
+  writeArtifact(run, 'board_failure_review', read('board_failure_review.implementation_defect.json'));
+  expectBlocked(gateRoute(run), 'missing_required_artifacts');
+}
+
+{
   const run = runDir('subpower-fixture-coder-rework');
   writeCommon(run);
   writeArtifact(run, 'board_failure_review', read('board_failure_review.implementation_defect.json'));

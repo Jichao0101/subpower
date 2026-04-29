@@ -28,6 +28,14 @@ node scripts/install-plugin.js --scope repo --target /tmp/subpower-plugin --dry-
 node scripts/install-plugin.js --scope repo --target ./.codex/plugins/subpower --force
 ```
 
+## Staging With Verification
+
+```bash
+node scripts/install-plugin.js --scope repo --target ./.codex/plugins/subpower --verify
+```
+
+`--verify` runs `node scripts/subpower.js validate` and `node scripts/subpower.js test` inside the staged copy. It validates the installed plugin structure only; it does not execute real workflow tasks, access an external board, or write an external Knowledge-Base.
+
 ## Post-Install Validation
 
 ```bash

@@ -87,6 +87,8 @@ function main(argv = process.argv.slice(2)) {
   throw new Error('usage: node scripts/subpower.js validate|test|gate|install|demo|report');
 }
 
+module.exports = { main };
+
 if (require.main === module) {
   try {
     const result = main();
@@ -98,5 +100,3 @@ if (require.main === module) {
     process.exit(1);
   }
 }
-
-module.exports = { main };

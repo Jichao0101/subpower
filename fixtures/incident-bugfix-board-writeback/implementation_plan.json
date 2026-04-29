@@ -1,0 +1,6 @@
+{
+  "session_id": "full-flow-board-log-rework-closure",
+  "producer_agent": "knowledge-planner",
+  "repo_scope": ["src/example/fusion/timestamp_alignment.cpp"],
+  "verification_plan": ["run local timestamp alignment regression", "run board validation with prompt-provided high yaw-rate trace"]
+}

@@ -52,6 +52,7 @@ node scripts/install-plugin.js --scope repo --target ./.codex/plugins/subpower
 node scripts/install-plugin.js --scope personal --target ~/.codex/plugins/subpower
 node scripts/install-plugin.js --scope repo --target /tmp/subpower-plugin --dry-run
 node scripts/install-plugin.js --scope repo --target ./.codex/plugins/subpower --force
+node scripts/install-plugin.js --scope repo --target ./.codex/plugins/subpower --verify
 node scripts/test-all.js
 ```
 
@@ -88,6 +89,7 @@ node scripts/test-no-external-runtime-dependency.js
 node scripts/test-no-cutepower-dependency.js
 node scripts/test-contract-schema-consistency.js
 node scripts/test-full-flow-fixture.js
+node scripts/test-incident-bugfix-board-writeback-fixture.js
 node scripts/test-no-auto-run-engine.js
 node scripts/test-all.js
 ```

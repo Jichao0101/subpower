@@ -19,6 +19,7 @@
         "additionalProperties": false,
         "properties": {
           "text": {"type": "string", "minLength": 1},
+          "claim_classification": {"enum": ["verified_runtime_fact", "project_decision", "temporary_observation", "unverified_claim"]},
           "verification_status": {"enum": ["verified", "unverified", "risk_only"]},
           "evidence_refs": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}
         }

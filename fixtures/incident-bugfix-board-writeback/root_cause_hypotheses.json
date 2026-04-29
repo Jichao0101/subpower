@@ -1,0 +1,12 @@
+{
+  "session_id": "full-flow-board-log-rework-closure",
+  "producer_agent": "knowledge-planner",
+  "hypotheses": [
+    {
+      "id": "h1",
+      "summary": "timestamp alignment error contributes to target jump",
+      "evidence_refs": ["/logs/example/fusion/high_yaw_rate.log"],
+      "confidence": "medium"
+    }
+  ]
+}

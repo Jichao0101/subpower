@@ -7,16 +7,24 @@ const path = require('path');
 
 const ROOT = path.resolve(__dirname, '..');
 const INSTALL_SCRIPT_VERSION = '3';
-const REQUIRED_DIRS = ['agents', 'contracts', 'schemas', 'scripts', 'skills', 'docs'];
+const REQUIRED_DIRS = ['agents', 'contracts', 'schemas', 'scripts', 'skills', 'docs', 'fixtures'];
 const ROOT_FILES = ['README.md', 'README.codex.md', 'INSTALL.md', 'AGENTS.md', '.gitignore'];
 const EXCLUDED_DIRS = new Set(['.git', '.subpower', 'node_modules', 'coverage', 'logs', 'tmp']);
 
+class PostInstallVerifyError extends Error {
+  constructor(payload) {
+    super(payload.error);
+    this.payload = payload;
+  }
+}
+
 function parseArgs(argv) {
-  const args = { dryRun: false, force: false };
+  const args = { dryRun: false, force: false, verify: false };
   for (let index = 0; index < argv.length; index += 1) {
     const item = argv[index];
     if (item === '--dry-run') args.dryRun = true;
     else if (item === '--force') args.force = true;
+    else if (item === '--verify') args.verify = true;
     else if (item === '--scope') args.scope = argv[++index];
     else if (item === '--target') args.target = argv[++index];
     else throw new Error(`unknown argument: ${item}`);
@@ -113,6 +121,29 @@ function writeManifest(target, summary, metadata) {
   return manifest;
 }
 
+function runPostInstallVerify(target) {
+  const commands = [
+    ['node', ['scripts/subpower.js', 'validate']],
+    ['node', ['scripts/subpower.js', 'test']],
+  ];
+  const executed = [];
+  for (const [command, args] of commands) {
+    const commandText = [command, ...args].join(' ');
+    const result = spawnSync(command, args, { cwd: target, encoding: 'utf8' });
+    executed.push(commandText);
+    if (result.status !== 0) {
+      throw new PostInstallVerifyError({
+        ok: false,
+        phase: 'post_install_verify',
+        target,
+        command: commandText,
+        error: (result.stderr || result.stdout || `exit status ${result.status}`).trim(),
+      });
+    }
+  }
+  return { ok: true, commands: executed };
+}
+
 function installPlugin(argv = process.argv.slice(2)) {
   const args = parseArgs(argv);
   if (!args.scope || !['personal', 'repo'].includes(args.scope)) {
@@ -120,6 +151,9 @@ function installPlugin(argv = process.argv.slice(2)) {
   }
   if (!args.target) {
     throw new Error('--target is required');
+  }
+  if (args.dryRun && args.verify) {
+    throw new Error('--verify cannot be used with --dry-run');
   }
   const target = path.resolve(expandHome(args.target));
   const warnings = [];
@@ -155,6 +189,9 @@ function installPlugin(argv = process.argv.slice(2)) {
   const summary = { ok: true, scope: args.scope, target, copied, skipped: Array.from(new Set(skipped)).sort(), warnings };
   if (!args.dryRun) {
     summary.manifest = writeManifest(target, summary, readPluginMetadata());
+    if (args.verify) {
+      summary.verify = runPostInstallVerify(target);
+    }
   }
   return summary;
 }
@@ -163,9 +200,9 @@ if (require.main === module) {
   try {
     console.log(JSON.stringify(installPlugin(), null, 2));
   } catch (error) {
-    console.error(JSON.stringify({ ok: false, error: error.message }, null, 2));
+    console.error(JSON.stringify(error.payload || { ok: false, error: error.message }, null, 2));
     process.exit(1);
   }
 }
 
-module.exports = { INSTALL_SCRIPT_VERSION, installPlugin, shouldSkip };
+module.exports = { INSTALL_SCRIPT_VERSION, installPlugin, runPostInstallVerify, shouldSkip };

@@ -126,6 +126,28 @@ Recommended order:
 12. Closure artifacts: `closure_matrix.json`
 13. Writeback artifacts: `knowledge_writeback_candidate.json`, `writeback_plan.json`, `writeback_receipt.json` or `writeback_declined.json`
 
+## Minimal execution path
+
+For a common bugfix that requires board validation and knowledge writeback, use the shortest artifact chain that unlocks the next gate or records a real decision point:
+
+1. `prompt_context.json`
+2. `task_profile.json`
+3. `workflow_plan.json`
+4. `workflow_state.json` or `route_history.json`
+5. `implementation_plan.json`
+6. `code_change_manifest.json`
+7. `review_decision.json`
+8. `board_target.json`
+9. `board_validation_result.json`
+10. If board failed: `board_failure_review.json`
+11. If board failed: `main_route_decision.json`
+12. `closure_matrix.json`
+13. `knowledge_writeback_candidate.json`
+14. `writeback_plan.json`
+15. `writeback_receipt.json` or `writeback_declined.json`
+
+Do not create extra artifacts unless they unlock a gate, record a decision point, preserve route history, or retain evidence that would otherwise be lost. Skip incident artifacts when the task is a direct reviewed bugfix and no board-side symptom investigation is needed.
+
 ## Role orchestration
 
 - `workflow-orchestrator`: owns workflow plan, workflow state, main route decision, route history, and closure request.
@@ -159,6 +181,8 @@ After `board_validation_result.status == failed`:
 
 The structural report may recommend the next missing artifact, but it must not decide the business route.
 
+`board_failure_review.json` must classify the failure before routing. Use `failure_type` values `code_regression`, `environment_issue`, `test_flake`, `board_setup_error`, `requirement_mismatch`, `insufficient_evidence`, or `unknown`; include `confidence`, `supporting_evidence_refs`, and `recommended_route`. Do not route a failed board validation directly to code rework without this assessment and a separate `main_route_decision.json`.
+
 ## Closure rules
 
 Closure requires:
@@ -185,8 +209,10 @@ Rules:
 
 - Subpower does not directly modify external Knowledge-Base content.
 - Subpower does not read or depend on external knowledge-base paths.
-- `current_knowledge` candidates may contain only verified claims with evidence refs.
-- Unverified claims must remain candidate/project/source scope or produce `writeback_declined.json`.
+- Each candidate claim should include `claim_classification`: `verified_runtime_fact`, `project_decision`, `temporary_observation`, or `unverified_claim`.
+- `current_knowledge` candidates may contain only `verified_runtime_fact` and evidence-supported `project_decision` claims.
+- `temporary_observation` is not written to long-term knowledge by default and should produce `writeback_declined.json` unless it is later converted into an evidenced fact or decision.
+- `unverified_claim` must produce `writeback_declined.json`.
 - `writeback_plan.json` uses logical destination refs, not external absolute paths.
 - `writeback_receipt.json` must record that subpower did not perform an external write.
 

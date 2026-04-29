@@ -21,6 +21,12 @@ assert.strictEqual(installed.ok, true);
 assert.strictEqual(fs.existsSync(path.join(target, '.codex-plugin', 'plugin.json')), true);
 assert.strictEqual(fs.existsSync(path.join(target, 'agents')), true);
 assert.strictEqual(fs.existsSync(path.join(target, 'contracts')), true);
+assert.strictEqual(fs.existsSync(path.join(target, 'fixtures')), true);
+assert.strictEqual(
+  fs.existsSync(path.join(target, 'fixtures', 'bugfix-board-failure-rework', 'task_profile.json')),
+  true,
+  'installed copy must include regression fixtures used by scripts/subpower.js test'
+);
 assert.strictEqual(fs.existsSync(path.join(target, 'subpower-plugin-manifest.json')), true);
 const manifest = JSON.parse(fs.readFileSync(path.join(target, 'subpower-plugin-manifest.json'), 'utf8'));
 assert.strictEqual(manifest.plugin_id, 'subpower');

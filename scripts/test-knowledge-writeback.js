@@ -53,6 +53,18 @@ for (const fileName of fs.readdirSync(FIXTURE).filter((name) => name.endsWith('.
 }
 
 {
+  const run = runDir('subpower-writeback-project-decision-ready');
+  writeBase(run);
+  const candidate = read('knowledge_writeback_candidate.verified.json');
+  candidate.claims[0].claim_classification = 'project_decision';
+  candidate.claims[0].text = 'The project decided to require closure evidence before current knowledge writeback.';
+  writeArtifact(run, 'knowledge_writeback_candidate', candidate);
+  writeArtifact(run, 'writeback_plan', read('writeback_plan.receipt.json'));
+  writeArtifact(run, 'writeback_receipt', read('writeback_receipt.json'));
+  expectReady(gateWriteback(run));
+}
+
+{
   const run = runDir('subpower-writeback-before-closure');
   writeBase(run, 'closure_matrix.blocked.json');
   writeVerifiedWriteback(run);
@@ -74,7 +86,31 @@ for (const fileName of fs.readdirSync(FIXTURE).filter((name) => name.endsWith('.
   writeArtifact(run, 'knowledge_writeback_candidate', read('knowledge_writeback_candidate.unverified_current.json'));
   writeArtifact(run, 'writeback_plan', read('writeback_plan.declined.json'));
   writeArtifact(run, 'writeback_receipt', read('writeback_receipt.json'));
-  expectBlocked(gateWriteback(run), 'unverified_claims_cannot_enter_current_knowledge');
+  expectBlocked(gateWriteback(run), 'unverified_claim_must_be_declined');
+}
+
+{
+  const run = runDir('subpower-writeback-temporary-observation-receipt');
+  writeBase(run);
+  const candidate = read('knowledge_writeback_candidate.verified.json');
+  candidate.claims[0].claim_classification = 'temporary_observation';
+  candidate.claims[0].text = 'A transient local observation should not be written as durable current knowledge.';
+  writeArtifact(run, 'knowledge_writeback_candidate', candidate);
+  writeArtifact(run, 'writeback_plan', read('writeback_plan.receipt.json'));
+  writeArtifact(run, 'writeback_receipt', read('writeback_receipt.json'));
+  expectBlocked(gateWriteback(run), 'temporary_observation_cannot_enter_long_term_knowledge');
+}
+
+{
+  const run = runDir('subpower-writeback-temporary-observation-declined');
+  writeBase(run);
+  const candidate = read('knowledge_writeback_candidate.verified.json');
+  candidate.claims[0].claim_classification = 'temporary_observation';
+  candidate.claims[0].text = 'A transient local observation should be declined for durable writeback.';
+  writeArtifact(run, 'knowledge_writeback_candidate', candidate);
+  writeArtifact(run, 'writeback_plan', read('writeback_plan.declined.json'));
+  writeArtifact(run, 'writeback_declined', read('writeback_declined.json'));
+  expectReady(gateWriteback(run));
 }
 
 {

@@ -185,7 +185,11 @@ function gateRoute(runDir) {
       return assessmentShape;
     }
     const assessment = readArtifact(runDir, 'board_failure_review');
-    if (assessment.recommended_next !== decision.route) {
+    if (assessment.recommended_route && assessment.recommended_next && assessment.recommended_route !== assessment.recommended_next) {
+      return verdict('route_gate', false, 'board_failure_recommendation_mismatch');
+    }
+    const recommendedRoute = assessment.recommended_route || assessment.recommended_next;
+    if (recommendedRoute !== decision.route) {
       return verdict('route_gate', false, 'route_does_not_match_reviewer_recommendation');
     }
   }
@@ -226,6 +230,37 @@ function gateEvidence(runDir) {
 
 function hasEvidenceRefs(value) {
   return Array.isArray(value.evidence_refs) && value.evidence_refs.length > 0;
+}
+
+function claimClassification(claim) {
+  if (claim.claim_classification) return claim.claim_classification;
+  if (claim.verification_status === 'verified') return 'verified_runtime_fact';
+  return 'unverified_claim';
+}
+
+function writebackClaimVerdict(candidate, terminalArtifact) {
+  const claims = Array.isArray(candidate.claims) ? candidate.claims : [];
+  for (const claim of claims) {
+    const classification = claimClassification(claim);
+    if (!hasEvidenceRefs(claim)) {
+      return verdict('writeback_gate', false, 'writeback_requires_evidence_refs');
+    }
+    if (classification === 'unverified_claim' && terminalArtifact !== 'writeback_declined') {
+      return verdict('writeback_gate', false, 'unverified_claim_must_be_declined');
+    }
+    if (classification === 'temporary_observation' && terminalArtifact !== 'writeback_declined') {
+      return verdict('writeback_gate', false, 'temporary_observation_cannot_enter_long_term_knowledge');
+    }
+    if (
+      terminalArtifact !== 'writeback_declined'
+      &&
+      candidate.target_scope === 'current_knowledge'
+      && !['verified_runtime_fact', 'project_decision'].includes(classification)
+    ) {
+      return verdict('writeback_gate', false, 'claim_classification_not_allowed_for_current_knowledge');
+    }
+  }
+  return null;
 }
 
 function containsForbiddenKnowledgePath(value) {
@@ -325,6 +360,11 @@ function gateWriteback(runDir) {
     return verdict('writeback_gate', false, 'missing_writeback_terminal_artifact', {
       missing: ['writeback_receipt_or_writeback_declined'],
     });
+  }
+  const terminalArtifact = hasArtifact(runDir, 'writeback_declined') ? 'writeback_declined' : 'writeback_receipt';
+  const claimVerdict = writebackClaimVerdict(candidate, terminalArtifact);
+  if (claimVerdict) {
+    return claimVerdict;
   }
   if (hasArtifact(runDir, 'writeback_receipt')) {
     const claims = Array.isArray(candidate.claims) ? candidate.claims : [];

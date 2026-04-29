@@ -48,15 +48,18 @@ const {
     status: 'sufficient',
     evidence: [{ id: 'board-log', path: 'logs/board.log' }]
   });
-  writeArtifact(runDir, 'board_failure_review', {
-    session_id: 's1',
-    producer_agent: 'review-1',
-    failure_class: 'implementation_defect',
-    recommended_next: 'coder_rework',
-    confidence: 0.9,
-    blocking_evidence: ['logs/board.log'],
-    rationale: ['Observed failure maps to changed behavior.']
-  });
+	  writeArtifact(runDir, 'board_failure_review', {
+	    session_id: 's1',
+	    producer_agent: 'review-1',
+	    failure_class: 'implementation_defect',
+	    failure_type: 'code_regression',
+	    recommended_next: 'coder_rework',
+	    recommended_route: 'coder_rework',
+	    confidence: 0.9,
+	    blocking_evidence: ['logs/board.log'],
+	    supporting_evidence_refs: ['logs/board.log'],
+	    rationale: ['Observed failure maps to changed behavior.']
+	  });
   writeArtifact(runDir, 'main_route_decision', {
     session_id: 's1',
     producer_agent: 'workflow-1',
@@ -87,9 +90,12 @@ const {
     session_id: 's1',
     producer_agent: 'review-1',
     failure_class: 'implementation_defect',
+    failure_type: 'code_regression',
     recommended_next: 'coder_rework',
+    recommended_route: 'coder_rework',
     confidence: 0.9,
     blocking_evidence: ['logs/board.log'],
+    supporting_evidence_refs: ['logs/board.log'],
     rationale: ['Observed failure maps to changed behavior.']
   });
   writeArtifact(runDir, 'main_route_decision', {

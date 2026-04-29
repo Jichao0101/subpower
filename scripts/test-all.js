@@ -22,6 +22,7 @@ const tests = [
   'scripts/test-no-cutepower-dependency.js',
   'scripts/test-contract-schema-consistency.js',
   'scripts/test-full-flow-fixture.js',
+  'scripts/test-incident-bugfix-board-writeback-fixture.js',
   'scripts/test-no-auto-run-engine.js',
 ];
 

@@ -1,0 +1,7 @@
+{
+  "session_id": "full-flow-board-log-rework-closure",
+  "producer_agent": "knowledge-planner",
+  "observed_symptom": "fusion target jump under high yaw-rate",
+  "evidence_refs": ["/logs/example/fusion/high_yaw_rate.log"],
+  "summary": ["The provided example trace shows target instability during high yaw-rate motion."]
+}

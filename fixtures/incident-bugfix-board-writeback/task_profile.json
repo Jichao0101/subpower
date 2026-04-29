@@ -1,0 +1,7 @@
+{
+  "session_id": "full-flow-board-log-rework-closure",
+  "producer_agent": "workflow-orchestrator",
+  "primary_type": "incident_investigation",
+  "task_goal": "Investigate and fix fusion target jump under high yaw-rate using provided board log context.",
+  "task_modifiers": ["board_log_provided", "board_validation_required"]
+}

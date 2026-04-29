@@ -2,8 +2,11 @@
   "session_id": "fixture-board-failure-rework",
   "producer_agent": "review-1",
   "failure_class": "plan_mismatch",
+  "failure_type": "requirement_mismatch",
   "recommended_next": "planner_rework",
+  "recommended_route": "planner_rework",
   "confidence": 0.74,
   "blocking_evidence": ["board-log", "target-trace"],
+  "supporting_evidence_refs": ["board-log", "target-trace"],
   "rationale": ["The plan covered timestamp alignment but did not include high yaw-rate target stability acceptance criteria."]
 }

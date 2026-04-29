@@ -1,0 +1,19 @@
+{
+  "session_id": "full-flow-board-log-rework-closure",
+  "producer_agent": "workflow-orchestrator",
+  "observed_symptom": "fusion target jump under high yaw-rate",
+  "expected_behavior": "fusion target remains stable during high yaw-rate motion",
+  "validation_criteria": ["no target jump in the provided high yaw-rate board trace"],
+  "repo_scope": ["src/example/fusion/timestamp_alignment.cpp", "src/example/fusion/ego_motion_compensation.cpp"],
+  "board_context": {
+    "provided": true,
+    "target_id": "example-high-yaw-rate-target",
+    "executor_type": "manual",
+    "log_paths": ["/logs/example/fusion/high_yaw_rate.log"],
+    "collect_paths": ["/logs/example/fusion/target_trace.json"],
+    "run_commands": [],
+    "constraints": ["use only prompt-provided example paths"]
+  },
+  "missing_context": [],
+  "assumptions": ["board execution is represented by fixture artifacts only"]
+}

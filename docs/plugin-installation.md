@@ -13,6 +13,7 @@ node scripts/install-plugin.js --scope repo --target ./.codex/plugins/subpower
 node scripts/install-plugin.js --scope personal --target ~/.codex/plugins/subpower
 node scripts/install-plugin.js --scope repo --target /tmp/subpower-plugin --dry-run
 node scripts/install-plugin.js --scope repo --target ./.codex/plugins/subpower --force
+node scripts/install-plugin.js --scope repo --target ./.codex/plugins/subpower --verify
 node scripts/test-all.js
 node scripts/subpower.js test
 node scripts/subpower.js validate

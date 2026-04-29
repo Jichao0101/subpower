@@ -2,15 +2,18 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "board_failure_review",
   "type": "object",
-  "required": ["session_id", "producer_agent", "failure_class", "recommended_next", "confidence", "blocking_evidence", "rationale"],
+  "required": ["session_id", "producer_agent", "failure_class", "failure_type", "recommended_next", "recommended_route", "confidence", "blocking_evidence", "supporting_evidence_refs", "rationale"],
   "additionalProperties": false,
   "properties": {
     "session_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"},
     "producer_agent": {"type": "string", "minLength": 1},
     "failure_class": {"enum": ["implementation_defect", "plan_mismatch", "requirement_ambiguity", "insufficient_evidence", "environment_issue", "test_setup_issue", "regression_risk", "unknown"]},
+    "failure_type": {"enum": ["code_regression", "environment_issue", "test_flake", "board_setup_error", "requirement_mismatch", "insufficient_evidence", "unknown"]},
     "recommended_next": {"enum": ["coder_rework", "planner_rework", "collect_more_evidence", "rerun_board_validation", "escalate_to_user", "close_as_environment_issue"]},
+    "recommended_route": {"enum": ["coder_rework", "planner_rework", "collect_more_evidence", "rerun_board_validation", "escalate_to_user", "close_as_environment_issue"]},
     "confidence": {"type": "number", "minimum": 0, "maximum": 1},
     "blocking_evidence": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+    "supporting_evidence_refs": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
     "rationale": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}
   }
 }

@@ -1,0 +1,14 @@
+{
+  "session_id": "full-flow-board-log-rework-closure",
+  "producer_agent": "workflow-orchestrator",
+  "routes": [
+    {
+      "round": 1,
+      "decision_point_id": "board_validation_failed",
+      "assessor_artifact": "board_failure_review",
+      "route": "planner_rework",
+      "reason": "Failure assessment classified the failed board validation as a plan mismatch.",
+      "timestamp": "2026-04-28T00:00:00Z"
+    }
+  ]
+}

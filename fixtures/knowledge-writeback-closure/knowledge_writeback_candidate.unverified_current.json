@@ -7,6 +7,7 @@
   "claims": [
     {
       "text": "An unverified project-specific conclusion is reusable current knowledge.",
+      "claim_classification": "unverified_claim",
       "verification_status": "unverified",
       "evidence_refs": ["closure-evidence"]
     }
