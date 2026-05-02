@@ -127,14 +127,19 @@ function indicatesSubpowerInvocation(value) {
 }
 
 function runIndicatesSubpower(runDir) {
-  if (hasArtifact(runDir, 'subagent_execution_status')) {
-    const status = readArtifact(runDir, 'subagent_execution_status');
-    return status.subpower_invoked === true;
-  }
   return ['prompt_context', 'task_profile', 'workflow_plan'].some((artifact) => {
     if (!hasArtifact(runDir, artifact)) return false;
     return indicatesSubpowerInvocation(readArtifact(runDir, artifact));
-  });
+  }) || (
+    hasArtifact(runDir, 'subagent_execution_status')
+    && readArtifact(runDir, 'subagent_execution_status').subpower_invoked === true
+  );
+}
+
+function subpowerInvocationMarkerArtifacts(runDir) {
+  return ['prompt_context', 'task_profile', 'workflow_plan'].filter((artifact) => (
+    hasArtifact(runDir, artifact) && indicatesSubpowerInvocation(readArtifact(runDir, artifact))
+  ));
 }
 
 function hasCompleteSubpowerClaim(value) {
@@ -164,6 +169,35 @@ function hasConcreteExecutionEvidence(invocation) {
     && ['runtime_spawn', 'runtime_handoff'].includes(evidence.evidence_type)
     && evidence.evidence_ref
   );
+}
+
+function classifySubagentExecution(status) {
+  if (!status) {
+    return {
+      subagent_execution_mode: 'missing',
+      execution_evidence_status: 'missing',
+      execution_classification: 'missing_execution_status',
+      complete_execution_supported: false,
+      degraded_execution: true,
+    };
+  }
+  const weakStatuses = ['degraded', 'synthetic_fixture', 'declared_only', 'insufficient'];
+  const completeSupported = status.subagent_execution_mode === 'spawned_subagents'
+    && status.execution_evidence_status === 'complete'
+    && status.degraded === false;
+  let classification = 'non_complete_execution_evidence';
+  if (completeSupported) classification = 'complete_subagent_first_execution_evidence';
+  else if (status.subagent_execution_mode === 'host_only_fallback') classification = 'host_only_fallback_degraded';
+  else if (status.subagent_execution_mode === 'not_required') classification = 'subagent_execution_not_required';
+  else if (weakStatuses.includes(status.execution_evidence_status)) classification = 'non_complete_execution_evidence';
+
+  return {
+    subagent_execution_mode: status.subagent_execution_mode,
+    execution_evidence_status: status.execution_evidence_status,
+    execution_classification: classification,
+    complete_execution_supported: completeSupported,
+    degraded_execution: !completeSupported && status.subagent_execution_mode !== 'not_required',
+  };
 }
 
 function roleInvocation(manifest, roleId) {
@@ -198,6 +232,7 @@ function completeClaimProducerRequirements(runDir) {
   return [
     ['code_change_manifest', ['repo-implementer']],
     ['review_decision', ['repo-reviewer']],
+    ['board_session', ['board-runner']],
     ['board_validation_result', ['board-runner']],
     ['board_failure_review', ['repo-reviewer', 'failure-analyst']],
     ['knowledge_writeback_candidate', ['knowledge-closer']],
@@ -205,6 +240,79 @@ function completeClaimProducerRequirements(runDir) {
     ['writeback_receipt', ['knowledge-closer']],
     ['writeback_declined', ['knowledge-closer']],
   ].filter(([artifact]) => hasArtifact(runDir, artifact));
+}
+
+function isCriticalRoleWork(roleId) {
+  return [
+    'repo-implementer',
+    'repo-reviewer',
+    'verification-manager',
+    'board-runner',
+    'failure-analyst',
+    'knowledge-closer',
+  ].includes(roleId);
+}
+
+function criticalActorSeparationVerdict(runDir, status) {
+  if (status.execution_evidence_status !== 'complete' && !runHasCompleteSubpowerClaim(runDir)) return null;
+  if (!hasArtifact(runDir, 'agent_invocation_manifest')) return null;
+  const manifest = readArtifact(runDir, 'agent_invocation_manifest');
+  const actorsByRole = new Map();
+  const addActor = (role, invocation, artifact = null) => {
+    if (!invocation || !invocation.agent_id) return;
+    if (!actorsByRole.has(role)) actorsByRole.set(role, []);
+    actorsByRole.get(role).push({
+      role,
+      artifact,
+      invocation_id: invocation.invocation_id,
+      agent_id: invocation.agent_id,
+    });
+  };
+  for (const [artifact, allowedRoles] of completeClaimProducerRequirements(runDir)) {
+    const value = readArtifact(runDir, artifact);
+    const invocation = findInvocation(manifest, value.producer_agent);
+    if (invocation && allowedRoles.includes(invocation.role_id)) {
+      addActor(invocation.role_id, invocation, artifact);
+    }
+  }
+  for (const role of completeClaimRequiredRoles(runDir)) {
+    for (const invocation of (manifest.invocations || []).filter((item) => item.role_id === role && hasConcreteExecutionEvidence(item))) {
+      addActor(role, invocation);
+    }
+  }
+  const pairs = [
+    ['repo-implementer', 'repo-reviewer'],
+    ['repo-implementer', 'verification-manager'],
+    ['repo-reviewer', 'verification-manager'],
+    ['repo-implementer', 'board-runner'],
+    ['repo-reviewer', 'board-runner'],
+    ['repo-implementer', 'knowledge-closer'],
+    ['repo-reviewer', 'knowledge-closer'],
+  ];
+  const collapsed = [];
+  for (const [left, right] of pairs) {
+    for (const leftActor of actorsByRole.get(left) || []) {
+      for (const rightActor of actorsByRole.get(right) || []) {
+        if (leftActor.agent_id === rightActor.agent_id) {
+          collapsed.push({
+            left,
+            right,
+            left_actor: leftActor.agent_id,
+            right_actor: rightActor.agent_id,
+            left_invocation_id: leftActor.invocation_id,
+            right_invocation_id: rightActor.invocation_id,
+            left_artifact: leftActor.artifact,
+            right_artifact: rightActor.artifact,
+          });
+        }
+      }
+    }
+  }
+  if (collapsed.length === 0) return null;
+  if (collapsed.some((item) => item.left === 'repo-implementer' && item.right === 'repo-reviewer')) {
+    return verdict('subagent_execution_gate', false, 'implementation_review_actor_not_separated');
+  }
+  return verdict('subagent_execution_gate', false, 'critical_role_actor_not_separated', { collapsed_roles: collapsed });
 }
 
 function validateCompleteSubpowerClaimEvidence(runDir, status) {
@@ -226,11 +334,26 @@ function validateCompleteSubpowerClaimEvidence(runDir, status) {
       host_participation: independenceAffecting,
     });
   }
+  const criticalRoleParticipation = hostParticipation.filter((item) => isCriticalRoleWork(item.role_id));
+  if (criticalRoleParticipation.length > 0) {
+    return verdict('subagent_execution_gate', false, 'host_critical_participation_blocks_complete_claim', {
+      host_participation: criticalRoleParticipation,
+    });
+  }
   if (!hasArtifact(runDir, 'agent_invocation_manifest')) {
     return verdict('subagent_execution_gate', false, 'missing_agent_invocation_manifest');
   }
+  if (hasArtifact(runDir, 'board_validation_result') && !hasArtifact(runDir, 'board_session')) {
+    return verdict('subagent_execution_gate', false, 'complete_claim_requires_board_session');
+  }
   const manifestShape = validateArtifactShape(runDir, 'agent_invocation_manifest');
   if (manifestShape.gate_result !== 'ready') return manifestShape;
+  if (hasArtifact(runDir, 'board_session')) {
+    const boardSessionShape = validateArtifactShape(runDir, 'board_session');
+    if (boardSessionShape.gate_result !== 'ready') return boardSessionShape;
+  }
+  const actorSeparation = criticalActorSeparationVerdict(runDir, status);
+  if (actorSeparation) return actorSeparation;
   const manifest = readArtifact(runDir, 'agent_invocation_manifest');
   const weakProducers = [];
   for (const [artifact, allowedRoles] of completeClaimProducerRequirements(runDir)) {
@@ -307,6 +430,12 @@ function validateSubagentExecutionStatus(runDir) {
   if (shape.gate_result !== 'ready') return shape;
 
   const status = readArtifact(runDir, 'subagent_execution_status');
+  const invocationMarkers = subpowerInvocationMarkerArtifacts(runDir);
+  if (invocationMarkers.length > 0 && status.subpower_invoked !== true) {
+    return verdict('subagent_execution_gate', false, 'status_subpower_invoked_conflicts_with_invocation_markers', {
+      invocation_markers: invocationMarkers,
+    });
+  }
   const guarantee = status.independence_guarantee || {};
   const completeClaimVerdict = validateCompleteSubpowerClaimEvidence(runDir, status);
   if (completeClaimVerdict) return completeClaimVerdict;
@@ -379,9 +508,13 @@ function validateSubagentExecutionStatus(runDir) {
     for (const [artifact, roles] of [
       ['code_change_manifest', ['repo-implementer']],
       ['review_decision', ['repo-reviewer']],
+      ['board_session', ['board-runner']],
       ['board_validation_result', ['board-runner']],
       ['board_failure_review', ['repo-reviewer', 'failure-analyst']],
       ['knowledge_writeback_candidate', ['knowledge-closer']],
+      ['writeback_plan', ['knowledge-closer']],
+      ['writeback_receipt', ['knowledge-closer']],
+      ['writeback_declined', ['knowledge-closer']],
     ]) {
       const roleVerdict = requireProducerRole(runDir, artifact, roles);
       if (roleVerdict) return roleVerdict;
@@ -400,6 +533,9 @@ function validateSubagentExecutionStatus(runDir) {
       }
     }
     if (status.execution_evidence_status === 'complete') {
+      if (hasArtifact(runDir, 'board_validation_result') && !hasArtifact(runDir, 'board_session')) {
+        return verdict('subagent_execution_gate', false, 'complete_execution_evidence_status_requires_board_session');
+      }
       const manifest = readArtifact(runDir, 'agent_invocation_manifest');
       const weakRoles = completeClaimRequiredRoles(runDir).filter((role) => {
         const invocation = roleInvocation(manifest, role);
@@ -410,9 +546,11 @@ function validateSubagentExecutionStatus(runDir) {
           missing_roles: weakRoles,
         });
       }
+      const actorSeparation = criticalActorSeparationVerdict(runDir, status);
+      if (actorSeparation) return actorSeparation;
     }
   }
-  return verdict('subagent_execution_gate', true, 'subagent_execution_ready');
+  return verdict('subagent_execution_gate', true, 'subagent_execution_ready', classifySubagentExecution(status));
 }
 
 function gateReviewIndependence(runDir) {
@@ -592,6 +730,15 @@ function gateClosure(runDir) {
   if (evidenceGate.gate_result !== 'ready') {
     return evidenceGate;
   }
+  if (hasArtifact(runDir, 'board_validation_result')) {
+    if (!hasArtifact(runDir, 'board_session')) {
+      return verdict('closure_gate', false, 'closure_requires_board_session_for_board_validation');
+    }
+    const boardSessionShape = validateArtifactShape(runDir, 'board_session');
+    if (boardSessionShape.gate_result !== 'ready') {
+      return boardSessionShape;
+    }
+  }
   const closure = readArtifact(runDir, 'closure_matrix');
   if (hasArtifact(runDir, 'code_change_manifest') && !hasArtifact(runDir, 'review_decision')) {
     return verdict('closure_gate', false, 'closure_requires_review_decision_for_repo_changes');
@@ -642,6 +789,9 @@ function gateWriteback(runDir) {
   );
   if (required.gate_result !== 'ready') {
     return required;
+  }
+  if (hasArtifact(runDir, 'board_validation_result') && !hasArtifact(runDir, 'board_session')) {
+    return verdict('writeback_gate', false, 'writeback_requires_board_session_for_board_validation');
   }
   const closure = gateClosure(runDir);
   if (closure.gate_result !== 'ready') {
@@ -741,4 +891,5 @@ module.exports = {
   gateWriteback,
   validateSubagentExecutionStatus,
   validateArtifactShape,
+  classifySubagentExecution,
 };

@@ -9,6 +9,7 @@ const {
   gateReviewIndependence,
   gateRoute,
   gateWriteback,
+  classifySubagentExecution,
   validateSubagentExecutionStatus,
 } = require('./runtime-gates');
 
@@ -28,6 +29,7 @@ const EXPECTED = [
   'code_change_manifest',
   'review_decision',
   'board_target',
+  'board_session',
   'board_validation_result',
   'board_failure_review',
   'main_route_decision',
@@ -172,6 +174,7 @@ function routeRounds(runDir) {
 function executionClaim(runDir, gates) {
   const closure = readOptional(runDir, 'closure_matrix');
   const status = readOptional(runDir, 'subagent_execution_status');
+  const executionClassification = classifySubagentExecution(status);
   const completeClaimed = Boolean(closure && (
     closure.completed_as_subagent_first_execution === true
     || closure.completed_by_subpower === true
@@ -181,15 +184,21 @@ function executionClaim(runDir, gates) {
     return {
       complete_subpower_execution_claimed: false,
       complete_subpower_execution_allowed: false,
+      structural_subagent_gate_ready: gates.subagents.gate_result === 'ready',
       status: status ? status.execution_evidence_status : 'missing',
+      ...executionClassification,
       reason: 'no_complete_execution_claim',
     };
   }
-  const allowed = gates.subagents.gate_result === 'ready' && gates.closure.gate_result === 'ready';
+  const allowed = gates.subagents.gate_result === 'ready'
+    && gates.closure.gate_result === 'ready'
+    && executionClassification.complete_execution_supported === true;
   return {
     complete_subpower_execution_claimed: true,
     complete_subpower_execution_allowed: allowed,
+    structural_subagent_gate_ready: gates.subagents.gate_result === 'ready',
     status: status ? status.execution_evidence_status : 'missing',
+    ...executionClassification,
     reason: allowed ? 'complete_claim_supported_by_role_execution_evidence' : gates.subagents.reason,
   };
 }

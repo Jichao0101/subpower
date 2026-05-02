@@ -44,6 +44,7 @@ function tempRun(name) {
 function writeRound1Base(runDir) {
   writeArtifact(runDir, 'subagent_execution_status', read('subagent_execution_status.json'));
   writeArtifact(runDir, 'agent_invocation_manifest', read('agent_invocation_manifest.json'));
+  writeArtifact(runDir, 'board_session', read('board_session.round1.json'));
   writeArtifact(runDir, 'board_validation_result', read('board_validation_result.failed.json'));
   writeArtifact(runDir, 'evidence_manifest', read('evidence_manifest.final.json'));
   writeArtifact(runDir, 'main_route_decision', read('main_route_decision.planner_rework.json'));
@@ -67,6 +68,7 @@ function writeRound1Base(runDir) {
   const run = tempRun('subpower-full-flow-round1-no-close');
   writeArtifact(run, 'subagent_execution_status', read('subagent_execution_status.json'));
   writeArtifact(run, 'agent_invocation_manifest', read('agent_invocation_manifest.json'));
+  writeArtifact(run, 'board_session', read('board_session.round1.json'));
   writeArtifact(run, 'board_validation_result', read('board_validation_result.failed.json'));
   writeArtifact(run, 'evidence_manifest', read('evidence_manifest.final.json'));
   writeArtifact(run, 'review_decision', read('review_decision.round1.json'));
@@ -79,6 +81,7 @@ function writeRound1Base(runDir) {
   const run = tempRun('subpower-full-flow-closure');
   writeArtifact(run, 'subagent_execution_status', read('subagent_execution_status.json'));
   writeArtifact(run, 'agent_invocation_manifest', read('agent_invocation_manifest.json'));
+  writeArtifact(run, 'board_session', read('board_session.round2.json'));
   writeArtifact(run, 'board_validation_result', read('board_validation_result.passed.json'));
   writeArtifact(run, 'evidence_manifest', read('evidence_manifest.final.json'));
   writeArtifact(run, 'review_decision', read('review_decision.round2.json'));

@@ -93,6 +93,16 @@ function boardValidationResult() {
   };
 }
 
+function boardSession() {
+  return {
+    session_id: 's1',
+    producer_agent: 'board-1',
+    board: 'example-board',
+    scenario: 'manual validation using example evidence',
+    status: 'completed'
+  };
+}
+
 function writebackCandidate() {
   return {
     session_id: 's1',
@@ -156,6 +166,29 @@ function writebackReceipt() {
 }
 
 {
+  const run = tempRunDir('subpower-status-false-conflicts-with-task-marker');
+  writeArtifact(run, 'task_profile', {
+    session_id: 's1',
+    producer_agent: 'workflow-orchestrator',
+    subpower_invoked: true,
+    execution_mode: 'subpower',
+    primary_type: 'bug_fix',
+    task_goal: 'Fix a subpower-governed issue.'
+  });
+  writeArtifact(run, 'subagent_execution_status', subagentStatus({
+    subpower_invoked: false,
+    subagent_execution_required: false,
+    subagent_execution_mode: 'not_required',
+    spawned_roles: [],
+    not_spawned_roles: [],
+    execution_evidence_status: 'insufficient',
+    degraded: true,
+    degradation_reason: 'conflicting status fixture'
+  }));
+  expectBlocked(validateSubagentExecutionStatus(run), 'status_subpower_invoked_conflicts_with_invocation_markers');
+}
+
+{
   const run = tempRunDir('subpower-host-only-complete-claim');
   writeArtifact(run, 'subagent_execution_status', subagentStatus({
     subagent_execution_mode: 'host_only_fallback',
@@ -214,6 +247,7 @@ function writebackReceipt() {
   writeArtifact(run, 'agent_invocation_manifest', invocationManifest());
   writeArtifact(run, 'code_change_manifest', codeChangeManifest());
   writeArtifact(run, 'review_decision', reviewDecision());
+  writeArtifact(run, 'board_session', boardSession());
   writeArtifact(run, 'board_validation_result', boardValidationResult());
   writeArtifact(run, 'evidence_manifest', evidenceManifest());
   writeArtifact(run, 'closure_matrix', closureMatrix({
@@ -255,7 +289,124 @@ function writebackReceipt() {
   writeArtifact(run, 'agent_invocation_manifest', manifest);
   writeArtifact(run, 'code_change_manifest', codeChangeManifest());
   writeArtifact(run, 'review_decision', reviewDecision());
+  writeArtifact(run, 'board_session', boardSession());
   writeArtifact(run, 'board_validation_result', boardValidationResult());
+  writeArtifact(run, 'evidence_manifest', evidenceManifest());
+  writeArtifact(run, 'closure_matrix', closureMatrix({
+    completed_as_subagent_first_execution: true,
+    complete_subpower_execution: true,
+    independence_evidence_status: 'complete'
+  }));
+  expectBlocked(validateSubagentExecutionStatus(run), 'complete_claim_requires_complete_execution_evidence');
+}
+
+{
+  const run = tempRunDir('subpower-complete-claim-missing-board-session');
+  writeArtifact(run, 'subagent_execution_status', subagentStatus());
+  writeArtifact(run, 'agent_invocation_manifest', invocationManifest());
+  writeArtifact(run, 'code_change_manifest', codeChangeManifest());
+  writeArtifact(run, 'review_decision', reviewDecision());
+  writeArtifact(run, 'board_validation_result', boardValidationResult());
+  writeArtifact(run, 'evidence_manifest', evidenceManifest());
+  writeArtifact(run, 'closure_matrix', closureMatrix({
+    completed_as_subagent_first_execution: true,
+    complete_subpower_execution: true,
+    independence_evidence_status: 'complete'
+  }));
+  expectBlocked(validateSubagentExecutionStatus(run), 'complete_claim_requires_board_session');
+}
+
+{
+  const run = tempRunDir('subpower-complete-evidence-status-missing-board-session');
+  writeArtifact(run, 'subagent_execution_status', subagentStatus());
+  writeArtifact(run, 'agent_invocation_manifest', invocationManifest());
+  writeArtifact(run, 'review_decision', reviewDecision());
+  writeArtifact(run, 'board_validation_result', boardValidationResult());
+  expectBlocked(validateSubagentExecutionStatus(run), 'complete_execution_evidence_status_requires_board_session');
+}
+
+{
+  const run = tempRunDir('subpower-closure-missing-board-session');
+  writeArtifact(run, 'subagent_execution_status', subagentStatus({
+    execution_evidence_status: 'synthetic_fixture'
+  }));
+  const manifest = invocationManifest();
+  manifest.invocations = manifest.invocations.map((invocation) => ({
+    ...invocation,
+    execution_evidence: {
+      evidence_type: 'synthetic_fixture',
+      evidence_ref: `fixture:${invocation.invocation_id}`
+    }
+  }));
+  writeArtifact(run, 'agent_invocation_manifest', manifest);
+  writeArtifact(run, 'review_decision', reviewDecision());
+  writeArtifact(run, 'board_validation_result', boardValidationResult());
+  writeArtifact(run, 'evidence_manifest', evidenceManifest());
+  writeArtifact(run, 'closure_matrix', closureMatrix({ independence_evidence_status: 'degraded' }));
+  expectBlocked(gateClosure(run), 'closure_requires_board_session_for_board_validation');
+}
+
+{
+  const run = tempRunDir('subpower-writeback-missing-board-session');
+  writeArtifact(run, 'subagent_execution_status', subagentStatus({
+    execution_evidence_status: 'synthetic_fixture'
+  }));
+  const manifest = invocationManifest();
+  manifest.invocations = manifest.invocations.map((invocation) => ({
+    ...invocation,
+    execution_evidence: {
+      evidence_type: 'synthetic_fixture',
+      evidence_ref: `fixture:${invocation.invocation_id}`
+    }
+  }));
+  writeArtifact(run, 'agent_invocation_manifest', manifest);
+  writeArtifact(run, 'review_decision', reviewDecision());
+  writeArtifact(run, 'board_validation_result', boardValidationResult());
+  writeArtifact(run, 'evidence_manifest', evidenceManifest());
+  writeArtifact(run, 'closure_matrix', closureMatrix({ independence_evidence_status: 'degraded' }));
+  writeArtifact(run, 'knowledge_writeback_candidate', writebackCandidate());
+  writeArtifact(run, 'writeback_plan', writebackPlan());
+  writeArtifact(run, 'writeback_receipt', writebackReceipt());
+  expectBlocked(gateWriteback(run), 'writeback_requires_board_session_for_board_validation');
+}
+
+{
+  const run = tempRunDir('subpower-spawned-subagents-synthetic-fixture-structural-only');
+  writeArtifact(run, 'subagent_execution_status', subagentStatus({
+    execution_evidence_status: 'synthetic_fixture'
+  }));
+  const manifest = invocationManifest();
+  manifest.invocations = manifest.invocations.map((invocation) => ({
+    ...invocation,
+    execution_evidence: {
+      evidence_type: 'synthetic_fixture',
+      evidence_ref: `fixture:${invocation.invocation_id}`
+    }
+  }));
+  writeArtifact(run, 'agent_invocation_manifest', manifest);
+  const result = validateSubagentExecutionStatus(run);
+  expectReady(result);
+  assert.strictEqual(result.complete_execution_supported, false);
+  assert.strictEqual(result.degraded_execution, true);
+  assert.strictEqual(result.execution_classification, 'non_complete_execution_evidence');
+}
+
+{
+  const run = tempRunDir('subpower-spawned-subagents-synthetic-fixture-complete-claim');
+  writeArtifact(run, 'subagent_execution_status', subagentStatus({
+    execution_evidence_status: 'synthetic_fixture'
+  }));
+  const manifest = invocationManifest();
+  manifest.invocations = manifest.invocations.map((invocation) => ({
+    ...invocation,
+    execution_evidence: {
+      evidence_type: 'synthetic_fixture',
+      evidence_ref: `fixture:${invocation.invocation_id}`
+    }
+  }));
+  writeArtifact(run, 'agent_invocation_manifest', manifest);
+  writeArtifact(run, 'code_change_manifest', codeChangeManifest());
+  writeArtifact(run, 'review_decision', reviewDecision());
   writeArtifact(run, 'evidence_manifest', evidenceManifest());
   writeArtifact(run, 'closure_matrix', closureMatrix({
     completed_as_subagent_first_execution: true,
@@ -351,6 +502,142 @@ function writebackReceipt() {
     independence_evidence_status: 'complete'
   }));
   expectBlocked(validateSubagentExecutionStatus(run), 'host_critical_participation_blocks_complete_claim');
+}
+
+{
+  const run = tempRunDir('subpower-disclosed-host-critical-participation-non-affecting-complete-claim');
+  writeArtifact(run, 'subagent_execution_status', subagentStatus({
+    critical_host_participation: [
+      {
+        role_id: 'repo-implementer',
+        scope: 'host directly performed implementation role work',
+        disclosed: true,
+        affects_independence: false
+      }
+    ]
+  }));
+  writeArtifact(run, 'agent_invocation_manifest', invocationManifest());
+  writeArtifact(run, 'code_change_manifest', codeChangeManifest());
+  writeArtifact(run, 'review_decision', reviewDecision());
+  writeArtifact(run, 'evidence_manifest', evidenceManifest());
+  writeArtifact(run, 'closure_matrix', closureMatrix({
+    completed_as_subagent_first_execution: true,
+    complete_subpower_execution: true,
+    independence_evidence_status: 'complete'
+  }));
+  expectBlocked(validateSubagentExecutionStatus(run), 'host_critical_participation_blocks_complete_claim');
+}
+
+{
+  const run = tempRunDir('subpower-writeback-plan-wrong-role-without-complete-claim');
+  writeArtifact(run, 'subagent_execution_status', subagentStatus({
+    execution_evidence_status: 'synthetic_fixture'
+  }));
+  const manifest = invocationManifest();
+  manifest.invocations = manifest.invocations.map((invocation) => ({
+    ...invocation,
+    execution_evidence: {
+      evidence_type: 'synthetic_fixture',
+      evidence_ref: `fixture:${invocation.invocation_id}`
+    }
+  }));
+  writeArtifact(run, 'agent_invocation_manifest', manifest);
+  writeArtifact(run, 'review_decision', reviewDecision());
+  writeArtifact(run, 'knowledge_writeback_candidate', writebackCandidate());
+  writeArtifact(run, 'writeback_plan', {
+    ...writebackPlan(),
+    producer_agent: 'impl-1'
+  });
+  expectBlocked(validateSubagentExecutionStatus(run), 'artifact_produced_by_wrong_role');
+}
+
+{
+  const run = tempRunDir('subpower-complete-evidence-collapsed-knowledge-closer');
+  writeArtifact(run, 'subagent_execution_status', subagentStatus());
+  const manifest = invocationManifest();
+  manifest.invocations = manifest.invocations.map((invocation) => (
+    invocation.role_id === 'knowledge-closer'
+      ? { ...invocation, agent_id: 'agent-impl' }
+      : invocation
+  ));
+  writeArtifact(run, 'agent_invocation_manifest', manifest);
+  writeArtifact(run, 'code_change_manifest', codeChangeManifest());
+  writeArtifact(run, 'review_decision', reviewDecision());
+  writeArtifact(run, 'evidence_manifest', evidenceManifest());
+  writeArtifact(run, 'knowledge_writeback_candidate', writebackCandidate());
+  writeArtifact(run, 'writeback_plan', writebackPlan());
+  expectBlocked(validateSubagentExecutionStatus(run), 'critical_role_actor_not_separated');
+}
+
+{
+  const run = tempRunDir('subpower-duplicate-board-runner-producer-collapses-implementer');
+  writeArtifact(run, 'subagent_execution_status', subagentStatus());
+  const manifest = invocationManifest();
+  manifest.invocations.push({
+    invocation_id: 'board-2',
+    agent_id: 'agent-impl',
+    role_id: 'board-runner',
+    execution_evidence: { evidence_type: 'runtime_spawn', evidence_ref: 'handoff:board-2' }
+  });
+  writeArtifact(run, 'agent_invocation_manifest', manifest);
+  writeArtifact(run, 'code_change_manifest', codeChangeManifest());
+  writeArtifact(run, 'review_decision', reviewDecision());
+  writeArtifact(run, 'board_session', {
+    ...boardSession(),
+    producer_agent: 'board-2'
+  });
+  writeArtifact(run, 'board_validation_result', {
+    ...boardValidationResult(),
+    producer_agent: 'board-2'
+  });
+  writeArtifact(run, 'evidence_manifest', evidenceManifest());
+  writeArtifact(run, 'closure_matrix', closureMatrix({
+    completed_as_subagent_first_execution: true,
+    complete_subpower_execution: true,
+    independence_evidence_status: 'complete'
+  }));
+  expectBlocked(validateSubagentExecutionStatus(run), 'critical_role_actor_not_separated');
+}
+
+{
+  const run = tempRunDir('subpower-duplicate-knowledge-closer-producer-collapses-reviewer');
+  writeArtifact(run, 'subagent_execution_status', subagentStatus());
+  const manifest = invocationManifest();
+  manifest.invocations.push({
+    invocation_id: 'closer-2',
+    agent_id: 'agent-review',
+    role_id: 'knowledge-closer',
+    execution_evidence: { evidence_type: 'runtime_spawn', evidence_ref: 'handoff:closer-2' }
+  });
+  writeArtifact(run, 'agent_invocation_manifest', manifest);
+  writeArtifact(run, 'code_change_manifest', codeChangeManifest());
+  writeArtifact(run, 'review_decision', reviewDecision());
+  writeArtifact(run, 'evidence_manifest', evidenceManifest());
+  writeArtifact(run, 'knowledge_writeback_candidate', {
+    ...writebackCandidate(),
+    producer_agent: 'closer-2'
+  });
+  writeArtifact(run, 'writeback_plan', {
+    ...writebackPlan(),
+    producer_agent: 'closer-2'
+  });
+  expectBlocked(validateSubagentExecutionStatus(run), 'critical_role_actor_not_separated');
+}
+
+{
+  const run = tempRunDir('subpower-duplicate-verification-manager-collapses-implementer');
+  writeArtifact(run, 'subagent_execution_status', subagentStatus());
+  const manifest = invocationManifest();
+  manifest.invocations.push({
+    invocation_id: 'verify-2',
+    agent_id: 'agent-impl',
+    role_id: 'verification-manager',
+    execution_evidence: { evidence_type: 'runtime_spawn', evidence_ref: 'handoff:verify-2' }
+  });
+  writeArtifact(run, 'agent_invocation_manifest', manifest);
+  writeArtifact(run, 'code_change_manifest', codeChangeManifest());
+  writeArtifact(run, 'review_decision', reviewDecision());
+  expectBlocked(validateSubagentExecutionStatus(run), 'critical_role_actor_not_separated');
 }
 
 assert.strictEqual(typeof validateSubagentExecutionStatus, 'function');

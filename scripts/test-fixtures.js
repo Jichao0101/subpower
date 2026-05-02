@@ -54,6 +54,7 @@ function runDir(name) {
 function writeCommon(run) {
   writeArtifact(run, 'subagent_execution_status', read('subagent_execution_status.json'));
   writeArtifact(run, 'agent_invocation_manifest', read('agent_invocation_manifest.json'));
+  writeArtifact(run, 'board_session', read('board_session.json'));
   writeArtifact(run, 'board_validation_result', read('board_validation_result.failed.json'));
   writeArtifact(run, 'evidence_manifest', read('evidence_manifest.json'));
 }

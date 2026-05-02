@@ -47,6 +47,7 @@ for (const token of ['/home/', '/mnt/', '/userdata/', '/Users/', '/Knowledge-Bas
   const run = tempRun('subpower-incident-board-route');
   writeArtifact(run, 'subagent_execution_status', read('subagent_execution_status.json'));
   writeArtifact(run, 'agent_invocation_manifest', read('agent_invocation_manifest.json'));
+  writeArtifact(run, 'board_session', read('board_session.failed.json'));
   writeArtifact(run, 'board_validation_result', read('board_validation_result.failed.json'));
   writeArtifact(run, 'evidence_manifest', read('evidence_manifest.json'));
   writeArtifact(run, 'board_failure_review', read('board_failure_review.json'));
@@ -61,6 +62,7 @@ for (const token of ['/home/', '/mnt/', '/userdata/', '/Users/', '/Knowledge-Bas
   const run = tempRun('subpower-incident-board-writeback');
   writeArtifact(run, 'subagent_execution_status', read('subagent_execution_status.json'));
   writeArtifact(run, 'agent_invocation_manifest', read('agent_invocation_manifest.json'));
+  writeArtifact(run, 'board_session', read('board_session.passed.json'));
   writeArtifact(run, 'board_validation_result', read('board_validation_result.passed.json'));
   writeArtifact(run, 'evidence_manifest', read('evidence_manifest.json'));
   writeArtifact(run, 'review_decision', read('review_decision.rework.json'));

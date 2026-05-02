@@ -1,0 +1,7 @@
+{
+  "session_id": "incident-bugfix-board-writeback",
+  "producer_agent": "board-runner",
+  "board": "example-high-yaw-rate-target",
+  "scenario": "manual rerun using /logs/example/fusion/high_yaw_rate.log",
+  "status": "completed"
+}
