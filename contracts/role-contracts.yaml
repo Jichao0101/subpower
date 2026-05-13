@@ -23,7 +23,20 @@
       "denied_actions": ["review_decision_write", "board_execute", "route_decision_write", "knowledge_writeback"],
       "required_inputs": ["implementation_plan", "handoff_packet"],
       "required_outputs": ["code_change_manifest", "evidence_manifest"],
-      "stop_conditions": ["missing_implementation_plan", "scope_mismatch", "verification_unavailable"]
+      "operating_principles": [
+        "state_assumptions_before_editing",
+        "prefer_minimum_sufficient_change",
+        "touch_only_files_within_repo_scope",
+        "avoid_speculative_abstractions_or_features",
+        "match_existing_project_style",
+        "define_verifiable_success_criteria_from_implementation_plan",
+        "record_verification_results_or_blocking_reason_in_evidence"
+      ],
+      "self_check_boundary": {
+        "allowed": ["implementation_scope_check", "local_verification_check", "manifest_completeness_check"],
+        "denied": ["review_decision", "approval_claim", "route_decision"]
+      },
+      "stop_conditions": ["missing_implementation_plan", "scope_mismatch", "verification_unavailable", "unclear_success_criteria", "unbounded_change_scope", "review_boundary_violation"]
     },
     {
       "role_id": "repo-reviewer",
